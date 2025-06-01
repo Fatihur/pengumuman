@@ -356,7 +356,7 @@
     </div>
 
     <!-- Document Title -->
-    <div class="document-title">SURAT KETERANGAN KELULUSAN</div>
+    <div class="document-title">{{ $schoolData['sk_title'] ?? 'SURAT KETERANGAN KELULUSAN' }}</div>
 
     <!-- Document Number -->
     <div class="document-number">
@@ -366,8 +366,7 @@
 
     <!-- Content -->
     <div class="content">
-        <p class="compact-text">Yang bertanda tangan di bawah ini, Kepala {{ $schoolData['school_name'] }}, dengan ini
-            menerangkan bahwa:</p>
+        <p class="compact-text">{{ $schoolData['sk_opening_text'] ?? 'Yang bertanda tangan di bawah ini, Kepala ' . $schoolData['school_name'] . ', dengan ini menerangkan bahwa:' }}</p>
 
         <!-- Student Information -->
         <div class="student-info">
@@ -401,8 +400,7 @@
 
         <!-- Graduation Statement -->
         <div class="graduation-statement">
-            Telah <strong>LULUS</strong> dari {{ $schoolData['school_name'] }}<br>
-            pada Tahun Pelajaran {{ $schoolData['graduation_year'] - 1 }}/{{ $schoolData['graduation_year'] }}
+            <strong>{{ $schoolData['sk_graduation_statement'] ?? 'Telah LULUS dari ' . $schoolData['school_name'] . ' pada Tahun Pelajaran ' . ($schoolData['graduation_year'] - 1) . '/' . $schoolData['graduation_year'] }}</strong>
         </div>
 
         @if ($student->pesan_khusus)
@@ -411,17 +409,22 @@
             </div>
         @endif
 
-        <p class="compact-text">Surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>
+        <p class="compact-text">{{ $schoolData['sk_closing_text'] ?? 'Surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.' }}</p>
     </div>
 
     <!-- Signature Section -->
     <div class="signature-section">
+        @if($schoolData['sk_show_photo'] ?? true)
         <div class="photo-box">
             <div class="photo-frame">
+                TEMPEL<br>
                 FOTO<br>
                 3 x 4<br>
+                DI SINI
             </div>
+            <p style="font-size: 10px; margin: 0;">Foto Siswa</p>
         </div>
+        @endif
 
         <div class="signature-box">
             <p style="font-size: 11px; margin-bottom: 5px;">Jakarta, {{ now()->format('d F Y') }}<br>Kepala Sekolah</p>
@@ -438,6 +441,7 @@
     <div class="footer">
         <p>Dokumen ini dicetak secara otomatis pada {{ now()->format('d F Y, H:i:s') }}</p>
 
+        @if($schoolData['sk_show_qr'] ?? true)
         <!-- QR Code Footer -->
         <div class="qr-footer">
             <div class="qr-left">
@@ -463,6 +467,7 @@
                 <div class="qr-text">Scan untuk verifikasi</div>
             </div>
         </div>
+        @endif
     </div>
 </body>
 

@@ -267,6 +267,161 @@
                 </div>
             </div>
 
+            <!-- SK Settings Section -->
+            <div class="px-8 py-6 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">Pengaturan Surat Keterangan</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Format Nomor Surat -->
+                    <div>
+                        <label for="sk_number_format" class="block text-sm font-medium text-gray-700 mb-2">
+                            Format Nomor Surat <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                               name="sk_number_format"
+                               id="sk_number_format"
+                               value="{{ old('sk_number_format', $settings['sk_number_format'] ?? 'SK/{counter}/{year}') }}"
+                               placeholder="SK/{counter}/{year}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               required>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Gunakan: {counter} = nomor urut, {year} = tahun, {month} = bulan, {student_id} = ID siswa
+                        </p>
+                    </div>
+
+                    <!-- Counter Start -->
+                    <div>
+                        <label for="sk_counter_start" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nomor Urut Mulai Dari
+                        </label>
+                        <input type="number"
+                               name="sk_counter_start"
+                               id="sk_counter_start"
+                               value="{{ old('sk_counter_start', $settings['sk_counter_start'] ?? 1) }}"
+                               min="1"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <p class="text-xs text-gray-500 mt-1">Nomor urut akan dimulai dari angka ini</p>
+                    </div>
+
+                    <!-- Reset Counter Yearly -->
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox"
+                                   name="sk_reset_yearly"
+                                   value="1"
+                                   {{ old('sk_reset_yearly', $settings['sk_reset_yearly'] ?? true) ? 'checked' : '' }}
+                                   class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <span class="ml-2 text-sm text-gray-700">Reset nomor urut setiap tahun</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Nomor urut akan kembali ke 1 setiap tahun baru</p>
+                    </div>
+
+                    <!-- Auto Generate Number -->
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox"
+                                   name="sk_auto_generate"
+                                   value="1"
+                                   {{ old('sk_auto_generate', $settings['sk_auto_generate'] ?? true) ? 'checked' : '' }}
+                                   class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <span class="ml-2 text-sm text-gray-700">Generate nomor surat otomatis</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Nomor surat akan dibuat otomatis saat cetak sertifikat</p>
+                    </div>
+
+                    <!-- SK Title -->
+                    <div class="md:col-span-2">
+                        <label for="sk_title" class="block text-sm font-medium text-gray-700 mb-2">
+                            Judul Surat Keterangan
+                        </label>
+                        <input type="text"
+                               name="sk_title"
+                               id="sk_title"
+                               value="{{ old('sk_title', $settings['sk_title'] ?? 'SURAT KETERANGAN KELULUSAN') }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <!-- SK Opening Text -->
+                    <div class="md:col-span-2">
+                        <label for="sk_opening_text" class="block text-sm font-medium text-gray-700 mb-2">
+                            Teks Pembuka
+                        </label>
+                        <textarea name="sk_opening_text"
+                                  id="sk_opening_text"
+                                  rows="3"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  placeholder="Yang bertanda tangan di bawah ini, Kepala {school_name}, dengan ini menerangkan bahwa:">{{ old('sk_opening_text', $settings['sk_opening_text'] ?? 'Yang bertanda tangan di bawah ini, Kepala {school_name}, dengan ini menerangkan bahwa:') }}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Gunakan: {school_name} = nama sekolah, {principal_name} = nama kepala sekolah
+                        </p>
+                    </div>
+
+                    <!-- SK Closing Text -->
+                    <div class="md:col-span-2">
+                        <label for="sk_closing_text" class="block text-sm font-medium text-gray-700 mb-2">
+                            Teks Penutup
+                        </label>
+                        <textarea name="sk_closing_text"
+                                  id="sk_closing_text"
+                                  rows="2"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  placeholder="Surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.">{{ old('sk_closing_text', $settings['sk_closing_text'] ?? 'Surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.') }}</textarea>
+                    </div>
+
+                    <!-- Graduation Statement -->
+                    <div class="md:col-span-2">
+                        <label for="sk_graduation_statement" class="block text-sm font-medium text-gray-700 mb-2">
+                            Pernyataan Kelulusan
+                        </label>
+                        <textarea name="sk_graduation_statement"
+                                  id="sk_graduation_statement"
+                                  rows="2"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  placeholder="Telah LULUS dari {school_name} pada Tahun Pelajaran {prev_year}/{graduation_year}">{{ old('sk_graduation_statement', $settings['sk_graduation_statement'] ?? 'Telah LULUS dari {school_name} pada Tahun Pelajaran {prev_year}/{graduation_year}') }}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Gunakan: {school_name} = nama sekolah, {graduation_year} = tahun kelulusan, {prev_year} = tahun sebelumnya
+                        </p>
+                    </div>
+
+                    <!-- Show Photo Box -->
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox"
+                                   name="sk_show_photo"
+                                   value="1"
+                                   {{ old('sk_show_photo', $settings['sk_show_photo'] ?? true) ? 'checked' : '' }}
+                                   class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <span class="ml-2 text-sm text-gray-700">Tampilkan kotak foto 3x4</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Menampilkan area untuk tempel foto siswa</p>
+                    </div>
+
+                    <!-- Show QR Code -->
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox"
+                                   name="sk_show_qr"
+                                   value="1"
+                                   {{ old('sk_show_qr', $settings['sk_show_qr'] ?? true) ? 'checked' : '' }}
+                                   class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <span class="ml-2 text-sm text-gray-700">Tampilkan QR Code verifikasi</span>
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">QR Code untuk verifikasi keaslian surat</p>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h3 class="text-md font-medium text-gray-900 mb-4">Preview Format Nomor Surat</h3>
+                    <div class="bg-gray-50 p-4 rounded-md">
+                        <div class="text-sm text-gray-600 mb-2">Contoh nomor surat yang akan dihasilkan:</div>
+                        <div class="font-mono text-lg text-blue-600" id="sk-preview">
+                            SK/001/2024
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Publication Settings Section -->
             <div class="px-8 py-6 border-b border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-900 mb-6">Pengaturan Publikasi</h2>
@@ -416,4 +571,34 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const formatInput = document.getElementById('sk_number_format');
+    const counterInput = document.getElementById('sk_counter_start');
+    const preview = document.getElementById('sk-preview');
+
+    function updatePreview() {
+        let format = formatInput.value || 'SK/{counter}/{year}';
+        let counter = counterInput.value || 1;
+        let year = new Date().getFullYear();
+        let month = String(new Date().getMonth() + 1).padStart(2, '0');
+
+        // Replace placeholders
+        let preview_text = format
+            .replace('{counter}', String(counter).padStart(3, '0'))
+            .replace('{year}', year)
+            .replace('{month}', month)
+            .replace('{student_id}', '123');
+
+        preview.textContent = preview_text;
+    }
+
+    formatInput.addEventListener('input', updatePreview);
+    counterInput.addEventListener('input', updatePreview);
+
+    // Initial preview
+    updatePreview();
+});
+</script>
 @endsection

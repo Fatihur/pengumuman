@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Setting;
+use App\Services\SKService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Exception;
@@ -66,21 +67,17 @@ class StudentController extends Controller
             return back()->with('error', 'Surat kelulusan hanya tersedia untuk siswa yang lulus.');
         }
 
-        // Ambil semua pengaturan sekolah dan pemerintah
-        $schoolData = [
-            'government_name' => Setting::getValue('government_name', 'PEMERINTAH PROVINSI DKI JAKARTA'),
-            'department_name' => Setting::getValue('department_name', 'DINAS PENDIDIKAN'),
-            'government_logo' => Setting::getValue('government_logo', ''),
-            'school_name' => Setting::getValue('school_name', 'SMA Negeri 1'),
-            'school_address' => Setting::getValue('school_address', 'Jl. Pendidikan No. 123, Jakarta'),
-            'school_phone' => Setting::getValue('school_phone', '(021) 1234567'),
-            'school_email' => Setting::getValue('school_email', 'info@sekolah.com'),
-            'school_website' => Setting::getValue('school_website', 'www.sekolah.com'),
-            'school_logo' => Setting::getValue('school_logo', ''),
-            'principal_name' => Setting::getValue('principal_name', 'Kepala Sekolah'),
-            'principal_nip' => Setting::getValue('principal_nip', '196501011990031001'),
-            'graduation_year' => Setting::getValue('graduation_year', date('Y')),
-        ];
+        // Generate nomor surat otomatis jika belum ada
+        if (empty($student->no_surat)) {
+            $autoGenerate = Setting::getValue('sk_auto_generate', true);
+            if ($autoGenerate) {
+                $student->no_surat = SKService::generateSKNumber($student->id);
+                $student->save();
+            }
+        }
+
+        // Ambil semua pengaturan sekolah dan SK template
+        $schoolData = SKService::getSKTemplateData($student);
 
         // Generate QR Code untuk verifikasi
         $verificationUrl = url('/verify/' . $student->id . '/' . md5($student->nisn . $student->tanggal_lahir->format('Y-m-d')));

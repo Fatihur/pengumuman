@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Setting;
+use App\Imports\StudentsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
@@ -251,6 +253,122 @@ class AdminController extends Controller
     }
 
     /**
+     * Form import Excel
+     */
+    public function importForm()
+    {
+        return view('admin.students.import');
+    }
+
+    /**
+     * Import data siswa dari Excel
+     */
+    public function importStudents(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls,csv|max:10240', // Max 10MB
+        ], [
+            'excel_file.required' => 'File Excel wajib dipilih',
+            'excel_file.mimes' => 'File harus berformat Excel (.xlsx, .xls) atau CSV',
+            'excel_file.max' => 'Ukuran file maksimal 10MB',
+        ]);
+
+        try {
+            $import = new StudentsImport();
+            Excel::import($import, $request->file('excel_file'));
+
+            $importedCount = $import->getImportedCount();
+            $skippedCount = $import->getSkippedCount();
+            $errors = $import->getErrors();
+
+            $message = "Import berhasil! {$importedCount} data berhasil diimport";
+            if ($skippedCount > 0) {
+                $message .= ", {$skippedCount} data dilewati";
+            }
+
+            if (!empty($errors)) {
+                $errorMessage = "Beberapa error terjadi:\n" . implode("\n", array_slice($errors, 0, 10));
+                if (count($errors) > 10) {
+                    $errorMessage .= "\n... dan " . (count($errors) - 10) . " error lainnya";
+                }
+
+                return redirect()->route('admin.students.import')
+                    ->with('warning', $message)
+                    ->with('errors', $errors);
+            }
+
+            return redirect()->route('admin.students')
+                ->with('success', $message);
+
+        } catch (\Exception $e) {
+            return redirect()->route('admin.students.import')
+                ->with('error', 'Terjadi kesalahan saat import: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Download template Excel untuk import
+     */
+    public function downloadTemplate()
+    {
+        $filename = 'template_import_siswa.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function() {
+            $file = fopen('php://output', 'w');
+
+            // Add BOM for UTF-8
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Header dengan contoh data
+            fputcsv($file, [
+                'nisn',
+                'nis',
+                'nama',
+                'tanggal_lahir',
+                'kelas',
+                'program_studi',
+                'status_kelulusan',
+                'pesan_khusus',
+                'no_surat'
+            ]);
+
+            // Contoh data
+            fputcsv($file, [
+                '1234567890',
+                '12345',
+                'Ahmad Budi Santoso',
+                '2005-01-15',
+                'XII IPA 1',
+                'IPA',
+                'lulus',
+                'Selamat atas kelulusannya',
+                'SK/001/2024'
+            ]);
+
+            fputcsv($file, [
+                '1234567891',
+                '12346',
+                'Siti Nurhaliza',
+                '2005-03-20',
+                'XII IPS 2',
+                'IPS',
+                'lulus',
+                '',
+                ''
+            ]);
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
      * Pengaturan
      */
     public function settings()
@@ -269,6 +387,18 @@ class AdminController extends Controller
             'school_website' => Setting::getValue('school_website', 'www.sekolah.com'),
             'school_logo' => Setting::getValue('school_logo', ''),
             'is_published' => Setting::getValue('is_published', false),
+
+            // SK Settings
+            'sk_number_format' => Setting::getValue('sk_number_format', 'SK/{counter}/{year}'),
+            'sk_counter_start' => Setting::getValue('sk_counter_start', 1),
+            'sk_reset_yearly' => Setting::getValue('sk_reset_yearly', true),
+            'sk_auto_generate' => Setting::getValue('sk_auto_generate', true),
+            'sk_title' => Setting::getValue('sk_title', 'SURAT KETERANGAN KELULUSAN'),
+            'sk_opening_text' => Setting::getValue('sk_opening_text', 'Yang bertanda tangan di bawah ini, Kepala {school_name}, dengan ini menerangkan bahwa:'),
+            'sk_closing_text' => Setting::getValue('sk_closing_text', 'Surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.'),
+            'sk_graduation_statement' => Setting::getValue('sk_graduation_statement', 'Telah LULUS dari {school_name} pada Tahun Pelajaran {prev_year}/{graduation_year}'),
+            'sk_show_photo' => Setting::getValue('sk_show_photo', true),
+            'sk_show_qr' => Setting::getValue('sk_show_qr', true),
         ];
 
         return view('admin.settings', compact('settings'));
@@ -292,6 +422,14 @@ class AdminController extends Controller
             'school_email' => 'nullable|email',
             'school_website' => 'nullable',
             'school_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+            // SK validation
+            'sk_number_format' => 'required|string|max:100',
+            'sk_counter_start' => 'required|integer|min:1',
+            'sk_title' => 'required|string|max:255',
+            'sk_opening_text' => 'required|string',
+            'sk_closing_text' => 'required|string',
+            'sk_graduation_statement' => 'required|string',
         ]);
 
         Setting::setValue('government_name', $request->government_name);
@@ -318,6 +456,18 @@ class AdminController extends Controller
         }
 
         Setting::setValue('is_published', $request->has('is_published'));
+
+        // Save SK settings
+        Setting::setValue('sk_number_format', $request->sk_number_format);
+        Setting::setValue('sk_counter_start', $request->sk_counter_start);
+        Setting::setValue('sk_reset_yearly', $request->has('sk_reset_yearly'));
+        Setting::setValue('sk_auto_generate', $request->has('sk_auto_generate'));
+        Setting::setValue('sk_title', $request->sk_title);
+        Setting::setValue('sk_opening_text', $request->sk_opening_text);
+        Setting::setValue('sk_closing_text', $request->sk_closing_text);
+        Setting::setValue('sk_graduation_statement', $request->sk_graduation_statement);
+        Setting::setValue('sk_show_photo', $request->has('sk_show_photo'));
+        Setting::setValue('sk_show_qr', $request->has('sk_show_qr'));
 
         return back()->with('success', 'Pengaturan berhasil diperbarui.');
     }

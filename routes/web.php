@@ -55,6 +55,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::post('/students/bulk-action', [AdminController::class, 'bulkAction'])->name('students.bulk-action');
     Route::get('/students/export', [AdminController::class, 'exportStudents'])->name('students.export');
 
+    // Import Excel
+    Route::get('/students/import', [AdminController::class, 'importForm'])->name('students.import');
+    Route::post('/students/import', [AdminController::class, 'importStudents'])->name('students.import.process');
+    Route::get('/students/template', [AdminController::class, 'downloadTemplate'])->name('students.template');
+
     // Settings
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');

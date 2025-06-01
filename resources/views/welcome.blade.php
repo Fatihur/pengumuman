@@ -67,16 +67,88 @@
                 <p class="text-gray-600 mb-6">Masukkan NISN/NIS dan tanggal lahir Anda untuk melihat hasil kelulusan</p>
             </div>
 
-            <form method="POST" action="{{ route('check.graduation') }}" class="max-w-md mx-auto">
+            <!-- Skeleton Loading Form (Hidden by default) -->
+            <div id="skeleton-form" class="max-w-md mx-auto hidden">
+                <div class="mb-6">
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-10 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+                <div class="mb-6">
+                    <div class="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div class="h-10 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+                <div class="h-12 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+
+            <!-- Checking Loading Overlay -->
+            <div id="checking-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 text-center">
+                    <div class="relative mb-6">
+                        <!-- Animated Search Icon -->
+                        <div class="w-20 h-20 mx-auto mb-4 relative">
+                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full animate-spin-slow"></div>
+                            <div class="absolute inset-2 bg-white rounded-full flex items-center justify-center">
+                                <svg class="w-8 h-8 text-blue-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Floating Dots -->
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2">
+                            <div class="flex space-x-1">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+                                <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                                <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checking Text with Typewriter Effect -->
+                    <div class="mb-4">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Sedang Memeriksa Data</h3>
+                        <p class="text-gray-600">
+                            <span id="checking-text">Mencari data siswa</span>
+                            <span class="animate-pulse">...</span>
+                        </p>
+                    </div>
+
+                    <!-- Progress Steps -->
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center text-xs text-gray-500 mb-2">
+                            <span>Memulai</span>
+                            <span>Memverifikasi</span>
+                            <span>Selesai</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="checking-progress" class="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Checking Steps -->
+                    <div class="text-sm text-gray-500">
+                        <div id="checking-step" class="flex items-center justify-center">
+                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Menghubungkan ke database...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actual Form -->
+            <form id="graduation-form" method="POST" action="{{ route('check.graduation') }}" class="max-w-md mx-auto">
                 @csrf
                 <div class="mb-6">
                     <label for="nisn_nis" class="block text-sm font-medium text-gray-700 mb-2">
                         NISN / NIS
                     </label>
-                    <input 
-                        type="text" 
-                        id="nisn_nis" 
-                        name="nisn_nis" 
+                    <input
+                        type="text"
+                        id="nisn_nis"
+                        name="nisn_nis"
                         value="{{ old('nisn_nis') }}"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="Masukkan NISN atau NIS"
@@ -88,21 +160,29 @@
                     <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700 mb-2">
                         Tanggal Lahir
                     </label>
-                    <input 
-                        type="date" 
-                        id="tanggal_lahir" 
-                        name="tanggal_lahir" 
+                    <input
+                        type="date"
+                        id="tanggal_lahir"
+                        name="tanggal_lahir"
                         value="{{ old('tanggal_lahir') }}"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
                     >
                 </div>
 
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
+                    id="submit-btn"
                     class="w-full btn-primary text-white font-bold py-3 px-4 rounded-md hover:shadow-lg transition duration-300"
                 >
-                    Cek Hasil Kelulusan
+                    <span id="btn-text">Cek Hasil Kelulusan</span>
+                    <span id="btn-loading" class="hidden">
+                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Memproses...
+                    </span>
                 </button>
             </form>
         @else
@@ -144,4 +224,144 @@
         </ul>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form elements
+    const graduationForm = document.getElementById('graduation-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+    const btnLoading = document.getElementById('btn-loading');
+
+    // Checking overlay elements
+    const checkingOverlay = document.getElementById('checking-overlay');
+    const checkingProgress = document.getElementById('checking-progress');
+    const checkingText = document.getElementById('checking-text');
+    const checkingStep = document.getElementById('checking-step');
+
+    // Checking messages
+    const checkingMessages = [
+        'Mencari data siswa',
+        'Memverifikasi identitas',
+        'Mengecek status kelulusan',
+        'Menyiapkan hasil',
+        'Menyelesaikan proses'
+    ];
+
+    const checkingSteps = [
+        { icon: 'database', text: 'Menghubungkan ke database...' },
+        { icon: 'search', text: 'Mencari data siswa...' },
+        { icon: 'shield', text: 'Memverifikasi identitas...' },
+        { icon: 'check', text: 'Mengecek status kelulusan...' },
+        { icon: 'document', text: 'Menyiapkan hasil...' }
+    ];
+
+    // Show checking loading
+    function showCheckingLoading() {
+        checkingOverlay.classList.remove('hidden');
+
+        let progress = 0;
+        let messageIndex = 0;
+        let stepIndex = 0;
+
+        const interval = setInterval(() => {
+            progress += Math.random() * 15 + 10;
+
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                // Form will submit naturally after this
+                return;
+            }
+
+            checkingProgress.style.width = progress + '%';
+
+            // Update checking message
+            if (messageIndex < checkingMessages.length - 1 && progress > (messageIndex + 1) * 20) {
+                messageIndex++;
+                checkingText.textContent = checkingMessages[messageIndex];
+            }
+
+            // Update checking step
+            if (stepIndex < checkingSteps.length - 1 && progress > (stepIndex + 1) * 20) {
+                stepIndex++;
+                const step = checkingSteps[stepIndex];
+
+                let iconSvg = '';
+                switch(step.icon) {
+                    case 'database':
+                        iconSvg = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>';
+                        break;
+                    case 'search':
+                        iconSvg = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>';
+                        break;
+                    case 'shield':
+                        iconSvg = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>';
+                        break;
+                    case 'check':
+                        iconSvg = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>';
+                        break;
+                    case 'document':
+                        iconSvg = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>';
+                        break;
+                }
+
+                checkingStep.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        ${iconSvg}
+                    </svg>
+                    ${step.text}
+                `;
+            }
+        }, 400);
+    }
+
+    // Form submission loading
+    if (graduationForm) {
+        graduationForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent immediate submission
+
+            // Show button loading state
+            submitBtn.disabled = true;
+            btnText.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+
+            // Add pulse effect to form
+            graduationForm.style.transform = 'scale(0.98)';
+            graduationForm.style.opacity = '0.8';
+
+            // Show checking loading overlay
+            setTimeout(() => {
+                showCheckingLoading();
+            }, 300);
+
+            // Submit form after loading animation (2-3 seconds)
+            setTimeout(() => {
+                // Actually submit the form
+                const formData = new FormData(graduationForm);
+                const submitButton = document.createElement('input');
+                submitButton.type = 'hidden';
+                submitButton.name = 'submitted';
+                submitButton.value = '1';
+                graduationForm.appendChild(submitButton);
+                graduationForm.submit();
+            }, 2500);
+        });
+    }
+
+
+});
+</script>
+
+<style>
+/* Minimal CSS for checking overlay */
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+    animation: spin-slow 3s linear infinite;
+}
+</style>
 @endsection
