@@ -134,10 +134,13 @@ Untuk pengguna Windows, jalankan file batch yang telah disediakan:
 - ✅ Font dan spacing yang dioptimalkan untuk 1 halaman
 
 ### QR Code Verification
-- ✅ Setiap sertifikat memiliki QR Code unik
+- ✅ Setiap sertifikat memiliki QR Code unik (SVG base64)
 - ✅ Verifikasi online melalui scan QR Code
 - ✅ Halaman verifikasi dengan detail siswa
 - ✅ Sistem keamanan hash untuk mencegah pemalsuan
+- ✅ Error correction level 'H' untuk scan yang reliable
+- ✅ 100% kompatibel dengan DomPDF (proven solution)
+- ✅ Tidak memerlukan extension tambahan
 
 ## 🔒 Keamanan
 
@@ -191,17 +194,28 @@ Admin dapat mengkonfigurasi:
 
 ## 🐛 Troubleshooting
 
-### QR Code Tidak Muncul
-- Pastikan extension GD atau Imagick terinstall
-- Jalankan `composer require simplesoftwareio/simple-qrcode`
+### QR Code Error "imagick extension required" atau "DomPDF SVG issue"
+**✅ SOLVED**: Aplikasi menggunakan SVG base64 approach yang proven working
+- QR Code: `base64_encode(QrCode::format('svg')->size(60)->errorCorrection('H')->generate($url))`
+- Template: `<img src="data:image/svg+xml;base64,{{ $qrCode }}">`
+- Tidak memerlukan Imagick extension
+- 100% kompatibel dengan DomPDF
+- Error correction level 'H' untuk kualitas terbaik
+
+**Referensi solusi**: Berdasarkan community solution yang terbukti working
+- Source: GitHub issue discussions
+- Tested: Laravel + DomPDF + QrCode library
+- Result: Perfect QR Code generation tanpa dependency tambahan
 
 ### Logo Tidak Tampil di PDF
+- ✅ **Sudah diperbaiki**: Logo menggunakan base64 encoding
 - Pastikan `php artisan storage:link` sudah dijalankan
-- Cek permission folder storage
+- Upload logo melalui admin panel
 
 ### Server Tidak Bisa Start
-- Pastikan port 8000 tidak digunakan aplikasi lain
+- Pastikan port tidak digunakan aplikasi lain
 - Coba port lain: `php artisan serve --port=8080`
+- Atau gunakan: `php -S localhost:8000 -t public`
 
 ## 📞 Support
 

@@ -32,7 +32,6 @@
         .government-header {
             display: table;
             width: 100%;
-            /* margin-bottom: 10px; */
         }
 
         .school-header {
@@ -233,7 +232,7 @@
 
         .footer {
             margin-top: 15px;
-            text-align: center;
+            text-align: left;
             font-size: 8px;
             color: #666;
             border-top: 1px solid #ccc;
@@ -266,6 +265,11 @@
             margin: 0 auto 5px;
         }
 
+        .qr-code img {
+            width: 100%;
+            height: auto;
+        }
+
         .qr-text {
             font-size: 7px;
             color: #666;
@@ -293,9 +297,13 @@
         <!-- Government Header -->
         <div class="government-header">
             <div class="logo-left">
-                @if ($schoolData['government_logo'] && file_exists(public_path('storage/' . $schoolData['government_logo'])))
-                    <img src="{{ public_path('storage/' . $schoolData['government_logo']) }}" alt="Logo Pemerintah"
-                        class="logo">
+                @if ($schoolData['government_logo'] && file_exists(storage_path('app/public/' . $schoolData['government_logo'])))
+                    @php
+                        $logoPath = storage_path('app/public/' . $schoolData['government_logo']);
+                        $logoData = base64_encode(file_get_contents($logoPath));
+                        $logoMime = mime_content_type($logoPath);
+                    @endphp
+                    <img src="data:{{ $logoMime }};base64,{{ $logoData }}" alt="Logo Pemerintah" class="logo">
                 @else
                     <div class="logo-placeholder">
                         LOGO<br>PEMERINTAH
@@ -309,9 +317,13 @@
             </div>
 
             <div class="logo-right">
-                @if ($schoolData['school_logo'] && file_exists(public_path('storage/' . $schoolData['school_logo'])))
-                    <img src="{{ public_path('storage/' . $schoolData['school_logo']) }}" alt="Logo Sekolah"
-                        class="logo">
+                @if ($schoolData['school_logo'] && file_exists(storage_path('app/public/' . $schoolData['school_logo'])))
+                    @php
+                        $logoPath = storage_path('app/public/' . $schoolData['school_logo']);
+                        $logoData = base64_encode(file_get_contents($logoPath));
+                        $logoMime = mime_content_type($logoPath);
+                    @endphp
+                    <img src="data:{{ $logoMime }};base64,{{ $logoData }}" alt="Logo Sekolah" class="logo">
                 @else
                     <div class="logo-placeholder">
                         LOGO<br>SEKOLAH
@@ -406,12 +418,9 @@
     <div class="signature-section">
         <div class="photo-box">
             <div class="photo-frame">
-                TEMPEL<br>
                 FOTO<br>
                 3 x 4<br>
-                DI SINI
             </div>
-            <p style="font-size: 10px; margin: 0;">Foto Siswa</p>
         </div>
 
         <div class="signature-box">
@@ -437,7 +446,19 @@
             </div>
             <div class="qr-right">
                 <div class="qr-code">
-                    {!! QrCode::size(60)->generate($verificationUrl) !!}
+                    @if($qrCode)
+                        <img src="data:image/svg+xml;base64,{{ $qrCode }}" alt="QR Code" style="width: 60px; height: 60px;">
+                    @else
+                        <div style="width: 60px; height: 60px; border: 2px solid #000; text-align: center; font-size: 7px; color: #000; background: #f8f9fa; padding: 8px;">
+                            <div style="font-weight: bold; margin-bottom: 3px;">VERIFIKASI</div>
+                            <div style="font-size: 6px; margin-bottom: 2px;">
+                                ID: {{ strtoupper(substr(md5($verificationUrl), 0, 8)) }}
+                            </div>
+                            <div style="font-size: 5px; line-height: 1.2;">
+                                Kunjungi website<br>sekolah untuk<br>verifikasi
+                            </div>
+                        </div>
+                    @endif
                 </div>
                 <div class="qr-text">Scan untuk verifikasi</div>
             </div>
