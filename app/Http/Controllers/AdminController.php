@@ -27,12 +27,62 @@ class AdminController extends Controller
     }
 
     /**
-     * Daftar siswa
+     * Daftar siswa dengan pencarian dan filter
      */
-    public function students()
+    public function students(Request $request)
     {
-        $students = Student::orderBy('nama')->paginate(20);
-        return view('admin.students.index', compact('students'));
+        $query = Student::query();
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('nisn', 'like', "%{$search}%")
+                  ->orWhere('nis', 'like', "%{$search}%")
+                  ->orWhere('kelas', 'like', "%{$search}%")
+                  ->orWhere('program_studi', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('status_kelulusan', $request->status);
+        }
+
+        // Filter by kelas
+        if ($request->filled('kelas')) {
+            $query->where('kelas', 'like', "%{$request->kelas}%");
+        }
+
+        // Filter by program studi
+        if ($request->filled('program_studi')) {
+            $query->where('program_studi', $request->program_studi);
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'nama');
+        $sortOrder = $request->get('sort_order', 'asc');
+
+        if (in_array($sortBy, ['nama', 'nisn', 'nis', 'kelas', 'status_kelulusan', 'created_at'])) {
+            $query->orderBy($sortBy, $sortOrder);
+        } else {
+            $query->orderBy('nama', 'asc');
+        }
+
+        // Pagination
+        $perPage = $request->get('per_page', 20);
+        if (!in_array($perPage, [10, 20, 50, 100])) {
+            $perPage = 20;
+        }
+
+        $students = $query->paginate($perPage)->appends($request->query());
+
+        // Get filter options
+        $kelasOptions = Student::distinct()->pluck('kelas')->filter()->sort();
+        $programStudiOptions = Student::distinct()->pluck('program_studi')->filter()->sort();
+
+        return view('admin.students.index', compact('students', 'kelasOptions', 'programStudiOptions'));
     }
 
     /**
@@ -98,6 +148,106 @@ class AdminController extends Controller
     {
         $student->delete();
         return redirect()->route('admin.students')->with('success', 'Data siswa berhasil dihapus.');
+    }
+
+    /**
+     * Bulk actions untuk siswa
+     */
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:delete,update_status,export',
+            'student_ids' => 'required|array|min:1',
+            'student_ids.*' => 'exists:students,id'
+        ]);
+
+        $studentIds = $request->student_ids;
+        $action = $request->action;
+
+        switch ($action) {
+            case 'delete':
+                $count = Student::whereIn('id', $studentIds)->count();
+                Student::whereIn('id', $studentIds)->delete();
+                return redirect()->route('admin.students')->with('success', "Berhasil menghapus {$count} data siswa.");
+
+            case 'update_status':
+                $request->validate([
+                    'new_status' => 'required|in:lulus,tidak_lulus'
+                ]);
+
+                $count = Student::whereIn('id', $studentIds)->update([
+                    'status_kelulusan' => $request->new_status
+                ]);
+
+                $statusText = $request->new_status === 'lulus' ? 'LULUS' : 'TIDAK LULUS';
+                return redirect()->route('admin.students')->with('success', "Berhasil mengubah status {$count} siswa menjadi {$statusText}.");
+
+            case 'export':
+                return $this->exportStudents($studentIds);
+
+            default:
+                return redirect()->route('admin.students')->with('error', 'Aksi tidak valid.');
+        }
+    }
+
+    /**
+     * Export data siswa ke CSV
+     */
+    public function exportStudents($studentIds = null)
+    {
+        $query = Student::query();
+
+        if ($studentIds) {
+            $query->whereIn('id', $studentIds);
+        }
+
+        $students = $query->orderBy('nama')->get();
+
+        $filename = 'data_siswa_' . date('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function() use ($students) {
+            $file = fopen('php://output', 'w');
+
+            // Add BOM for UTF-8
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            // Header
+            fputcsv($file, [
+                'NISN',
+                'NIS',
+                'Nama',
+                'Tanggal Lahir',
+                'Kelas',
+                'Program Studi',
+                'Status Kelulusan',
+                'Pesan Khusus',
+                'No Surat'
+            ]);
+
+            // Data
+            foreach ($students as $student) {
+                fputcsv($file, [
+                    $student->nisn,
+                    $student->nis,
+                    $student->nama,
+                    $student->tanggal_lahir->format('d/m/Y'),
+                    $student->kelas,
+                    $student->program_studi,
+                    $student->status_kelulusan === 'lulus' ? 'LULUS' : 'TIDAK LULUS',
+                    $student->pesan_khusus,
+                    $student->no_surat
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**

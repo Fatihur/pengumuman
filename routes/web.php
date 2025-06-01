@@ -51,6 +51,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::put('/students/{student}', [AdminController::class, 'updateStudent'])->name('students.update');
     Route::delete('/students/{student}', [AdminController::class, 'destroyStudent'])->name('students.destroy');
 
+    // Bulk actions
+    Route::post('/students/bulk-action', [AdminController::class, 'bulkAction'])->name('students.bulk-action');
+    Route::get('/students/export', [AdminController::class, 'exportStudents'])->name('students.export');
+
     // Settings
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
