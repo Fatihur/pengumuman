@@ -60,7 +60,7 @@
 
     <!-- Main Card -->
     <div class="bg-white rounded-lg card-shadow p-8 mb-8">
-        @if($isPublished)
+        @if(isset($isPublished) && $isPublished)
             <!-- Graduation Check Form -->
             <div class="text-center mb-8">
                 <h3 class="text-2xl font-bold text-gray-900 mb-4">Cek Hasil Kelulusan</h3>
@@ -81,7 +81,7 @@
             </div>
 
             <!-- Checking Loading Overlay -->
-            <div id="checking-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div id="checking-overlay" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50 hidden">
                 <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 text-center">
                     <div class="relative mb-6">
                         <!-- Animated Search Icon -->
@@ -259,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show checking loading
     function showCheckingLoading() {
         checkingOverlay.classList.remove('hidden');
+        checkingOverlay.classList.add('flex');
 
         let progress = 0;
         let messageIndex = 0;

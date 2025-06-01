@@ -17,9 +17,15 @@ class StudentController extends Controller
      */
     public function index()
     {
+        // Cek apakah pengumuman sudah dipublikasikan
+        $isPublished = Setting::getValue('is_published', false);
+
+        if (!$isPublished) {
+            return view('not-published');
+        }
+
         $schoolName = Setting::getValue('school_name', 'SMA Negeri 1');
         $graduationYear = Setting::getValue('graduation_year', date('Y'));
-        $isPublished = Setting::getValue('is_published', false);
 
         return view('welcome', compact('schoolName', 'graduationYear', 'isPublished'));
     }
@@ -120,4 +126,6 @@ class StudentController extends Controller
 
         return view('verify-certificate', compact('student', 'schoolName'));
     }
+
+
 }
