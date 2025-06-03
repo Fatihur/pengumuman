@@ -76,6 +76,170 @@
     margin-bottom: 2rem;
 }
 
+/* School Logo - Remove any background */
+.school-logo {
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* School Logo Container - Ensure no background */
+.school-logo-container,
+.logo-container .flex-shrink-0:last-child {
+    background: transparent !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+/* Additional overrides for school logo */
+.school-logo-container img,
+img.school-logo {
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    background-clip: initial !important;
+    background-origin: initial !important;
+    background-size: initial !important;
+    background-repeat: initial !important;
+    background-position: initial !important;
+    background-attachment: initial !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+
+    /* Force remove any white/gray background */
+    mix-blend-mode: multiply !important;
+    isolation: isolate !important;
+
+    /* Remove any possible container backgrounds */
+    outline: none !important;
+    outline-offset: 0 !important;
+
+    /* Ensure transparency */
+    opacity: 1 !important;
+
+    /* Remove any inherited backgrounds */
+    background-blend-mode: normal !important;
+}
+
+/* Force transparent background for school logo with higher specificity */
+.logo-container .school-logo-container img.school-logo,
+.logo-container .flex-shrink-0 img.school-logo,
+div.school-logo-container img.school-logo {
+    background: transparent !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Remove any Tailwind CSS backgrounds that might be applied */
+.school-logo-container,
+.school-logo-container img,
+img.school-logo {
+    --tw-bg-opacity: 0 !important;
+    --tw-shadow: none !important;
+    --tw-ring-shadow: none !important;
+    --tw-drop-shadow: none !important;
+}
+
+/* Alternative approach - if the background is part of the image file */
+.school-logo {
+    /* Try to make white/light backgrounds transparent */
+    filter: contrast(1.2) brightness(1.1) !important;
+
+    /* Advanced technique to remove white background from image */
+    mix-blend-mode: darken !important;
+
+    /* Alternative: Use CSS mask to remove white areas */
+    -webkit-mask:
+        radial-gradient(circle, transparent 0%, black 1%),
+        linear-gradient(transparent, transparent);
+    -webkit-mask-composite: subtract;
+    mask:
+        radial-gradient(circle, transparent 0%, black 1%),
+        linear-gradient(transparent, transparent);
+    mask-composite: subtract;
+}
+
+/* Try different blend modes for removing white background */
+.school-logo.remove-white-bg {
+    mix-blend-mode: multiply !important;
+    filter: contrast(1.5) brightness(0.9) !important;
+}
+
+/* CSS-only approach to remove white background */
+.school-logo.transparent-white {
+    background: transparent !important;
+    /* This creates a mask that makes white pixels transparent */
+    filter:
+        contrast(1.2)
+        brightness(1.1)
+        drop-shadow(0 0 0 transparent) !important;
+
+    /* Alternative using backdrop-filter */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Last resort - hide any background that might appear */
+.school-logo-container::before,
+.school-logo-container::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Ultimate solution - Force complete transparency */
+.school-logo-container {
+    position: relative !important;
+    background: none !important;
+    background-color: transparent !important;
+    overflow: visible !important;
+}
+
+.school-logo-container img.school-logo {
+    position: relative !important;
+    z-index: 10 !important;
+    background: none !important;
+    background-color: transparent !important;
+
+    /* Remove white background using advanced CSS */
+    filter:
+        contrast(1.1)
+        brightness(1.05)
+        saturate(1.1) !important;
+
+    /* Force blend mode to remove white */
+    mix-blend-mode: multiply !important;
+
+    /* Ensure no box model backgrounds */
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+
+    /* Remove any possible pseudo-element backgrounds */
+    isolation: isolate !important;
+}
+
+/* Remove any inherited styles from parent containers */
+.logo-container .school-logo-container,
+.logo-container .flex-shrink-0:last-child {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+}
+
 @media (max-width: 640px) {
     .logo-container {
         gap: 1.5rem;

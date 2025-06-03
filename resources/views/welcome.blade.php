@@ -28,10 +28,11 @@
                 @endif
 
                 @if($schoolLogo && file_exists(public_path('storage/' . $schoolLogo)))
-                    <div class="flex-shrink-0">
+                    <div class="flex-shrink-0 school-logo-container" style="background: transparent !important;">
                         <img src="{{ asset('storage/' . $schoolLogo) }}"
                              alt="Logo Sekolah"
-                             class="h-20 w-20 object-contain drop-shadow-lg">
+                             class="h-20 w-20 object-contain school-logo remove-white-bg transparent-white blend-darken use-mask school-logo-nuclear"
+                             style="background: transparent !important; mix-blend-mode: multiply !important; filter: contrast(1.2) brightness(1.1) !important;">
                     </div>
                 @else
                     <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">

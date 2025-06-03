@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\SecurityController;
+use App\Http\Controllers\SecurityLogController;
 
 // Public routes with rate limiting
 Route::middleware(['rate.limit:30,1'])->group(function () {
@@ -12,6 +13,16 @@ Route::middleware(['rate.limit:30,1'])->group(function () {
     Route::post('/check-graduation', [StudentController::class, 'checkGraduation'])->name('check.graduation');
     Route::get('/certificate/{student}', [StudentController::class, 'generatePDF'])->name('generate.pdf');
     Route::get('/verify/{student}/{hash}', [StudentController::class, 'verifyCertificate'])->name('verify.certificate');
+
+    // Test protection page
+    Route::get('/test-protection', function () {
+        return view('test-protection');
+    })->name('test.protection');
+});
+
+// Security logging API (with higher rate limit for legitimate logging)
+Route::middleware(['rate.limit:60,1'])->group(function () {
+    Route::post('/api/security-log', [SecurityLogController::class, 'logSecurityAttempt'])->name('api.security-log');
 });
 
 // Authentication routes
@@ -76,5 +87,6 @@ Route::middleware(['auth', 'admin.access', 'rate.limit:120,1'])->prefix('admin')
         Route::get('/audit-logs/{id}', [SecurityController::class, 'auditLogDetails'])->name('audit-log-details');
         Route::get('/export-report', [SecurityController::class, 'exportReport'])->name('export-report');
         Route::post('/clean-logs', [SecurityController::class, 'cleanLogs'])->name('clean-logs');
+        Route::get('/protection-stats', [SecurityLogController::class, 'getProtectionStats'])->name('protection-stats');
     });
 });

@@ -1,0 +1,227 @@
+/* 
+ * Advanced Logo Background Removal
+ * This CSS file contains aggressive techniques to remove white/gray backgrounds from logos
+ */
+
+/* Method 1: Complete CSS Reset for School Logo */
+.school-logo-container,
+.school-logo-container * {
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    background-clip: border-box !important;
+    background-origin: padding-box !important;
+    background-size: auto !important;
+    background-repeat: no-repeat !important;
+    background-position: 0% 0% !important;
+    background-attachment: scroll !important;
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Method 2: Advanced Image Processing */
+.school-logo {
+    /* Remove white background using blend modes */
+    mix-blend-mode: multiply !important;
+    
+    /* Enhance contrast to make logo stand out */
+    filter: 
+        contrast(1.2) 
+        brightness(1.1) 
+        saturate(1.1) 
+        drop-shadow(0 0 0 transparent) !important;
+    
+    /* Force transparency */
+    background: transparent !important;
+    background-color: rgba(0, 0, 0, 0) !important;
+    
+    /* Remove any inherited styles */
+    isolation: isolate !important;
+    
+    /* Ensure proper positioning */
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Method 3: CSS Mask Technique (Advanced) */
+.school-logo.use-mask {
+    /* Create a mask that removes white areas */
+    -webkit-mask-image: 
+        linear-gradient(to right, black 0%, black 100%);
+    mask-image: 
+        linear-gradient(to right, black 0%, black 100%);
+    
+    -webkit-mask-mode: alpha;
+    mask-mode: alpha;
+    
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    
+    -webkit-mask-position: center;
+    mask-position: center;
+}
+
+/* Method 4: SVG Filter Approach */
+.school-logo.svg-filter {
+    filter: url('#remove-white-filter') !important;
+}
+
+/* Method 5: Pseudo-element Overlay Removal */
+.school-logo-container::before,
+.school-logo-container::after,
+.school-logo::before,
+.school-logo::after {
+    display: none !important;
+    content: none !important;
+    background: none !important;
+}
+
+/* Method 6: Force Transparency with Higher Specificity */
+body .logo-container .school-logo-container img.school-logo,
+html body .logo-container .school-logo-container img.school-logo {
+    background: transparent !important;
+    background-color: rgba(255, 255, 255, 0) !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+    outline: 0 !important;
+    
+    /* Advanced transparency techniques */
+    opacity: 1 !important;
+    visibility: visible !important;
+    
+    /* Remove any possible container effects */
+    transform: none !important;
+    clip-path: none !important;
+    mask: none !important;
+    -webkit-mask: none !important;
+}
+
+/* Method 7: Tailwind CSS Variable Override */
+.school-logo-container,
+.school-logo {
+    --tw-bg-opacity: 0 !important;
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-shadow-colored: 0 0 #0000 !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    --tw-ring-color: transparent !important;
+    --tw-ring-opacity: 0 !important;
+    --tw-backdrop-blur: none !important;
+    --tw-backdrop-brightness: none !important;
+    --tw-backdrop-contrast: none !important;
+    --tw-backdrop-grayscale: none !important;
+    --tw-backdrop-hue-rotate: none !important;
+    --tw-backdrop-invert: none !important;
+    --tw-backdrop-opacity: none !important;
+    --tw-backdrop-saturate: none !important;
+    --tw-backdrop-sepia: none !important;
+}
+
+/* Method 8: Alternative Blend Modes */
+.school-logo.blend-darken {
+    mix-blend-mode: darken !important;
+    filter: contrast(1.3) brightness(0.95) !important;
+}
+
+.school-logo.blend-screen {
+    mix-blend-mode: screen !important;
+    filter: invert(1) contrast(1.2) invert(1) !important;
+}
+
+.school-logo.blend-overlay {
+    mix-blend-mode: overlay !important;
+    filter: contrast(1.1) brightness(1.05) !important;
+}
+
+/* Method 9: Container Isolation */
+.school-logo-container {
+    isolation: isolate !important;
+    contain: layout style paint !important;
+    will-change: auto !important;
+}
+
+/* Method 10: Force Remove Any Framework Styles */
+.school-logo[class*="bg-"],
+.school-logo[class*="shadow-"],
+.school-logo[class*="border-"],
+.school-logo[class*="ring-"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Method 11: Media Query Specific Fixes */
+@media screen {
+    .school-logo {
+        background: transparent !important;
+        background-color: transparent !important;
+        mix-blend-mode: multiply !important;
+    }
+}
+
+@media print {
+    .school-logo {
+        background: transparent !important;
+        background-color: transparent !important;
+        mix-blend-mode: normal !important;
+        filter: none !important;
+    }
+}
+
+/* Method 12: Browser Specific Fixes */
+@supports (mix-blend-mode: multiply) {
+    .school-logo {
+        mix-blend-mode: multiply !important;
+    }
+}
+
+@supports not (mix-blend-mode: multiply) {
+    .school-logo {
+        filter: contrast(1.2) brightness(1.1) !important;
+    }
+}
+
+/* Method 13: Animation-based Background Removal */
+@keyframes removeBackground {
+    0% { background-color: transparent; }
+    100% { background-color: transparent; }
+}
+
+.school-logo {
+    animation: removeBackground 0.1s linear infinite !important;
+}
+
+/* Method 14: CSS Grid/Flexbox Container Fix */
+.logo-container {
+    background: transparent !important;
+}
+
+.logo-container > * {
+    background: transparent !important;
+}
+
+.logo-container .school-logo-container {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Method 15: Ultimate Nuclear Option */
+.school-logo-nuclear {
+    all: unset !important;
+    display: inline-block !important;
+    width: 5rem !important;
+    height: 5rem !important;
+    object-fit: contain !important;
+    mix-blend-mode: multiply !important;
+    filter: contrast(1.1) brightness(1.05) !important;
+    background: none !important;
+    background-color: transparent !important;
+}

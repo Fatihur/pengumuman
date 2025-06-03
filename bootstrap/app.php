@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append([
             \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\InputSanitization::class,
+            // \App\Http\Middleware\BotDetection::class, // Disabled - causing false positives
         ]);
 
         // Route-specific middleware aliases

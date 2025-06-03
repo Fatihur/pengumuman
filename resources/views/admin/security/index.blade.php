@@ -220,27 +220,91 @@
     </div>
     @endif
 
+    <!-- Client Protection Status -->
+    <div class="admin-card mb-8">
+        <div class="admin-card-header">
+            <h2 class="text-lg md:text-xl font-semibold text-gray-900">Client-side Protection Status</h2>
+        </div>
+        <div class="admin-card-body">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="protection-status-item p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <span class="text-sm font-medium text-green-800">Right-click Protection</span>
+                    </div>
+                    <p class="text-xs text-green-600 mt-1">Active</p>
+                </div>
+
+                <div class="protection-status-item p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <span class="text-sm font-medium text-green-800">Keyboard Shortcuts</span>
+                    </div>
+                    <p class="text-xs text-green-600 mt-1">Blocked</p>
+                </div>
+
+                <div class="protection-status-item p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <span class="text-sm font-medium text-green-800">DevTools Detection</span>
+                    </div>
+                    <p class="text-xs text-green-600 mt-1">Monitoring</p>
+                </div>
+
+                <div class="protection-status-item p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <span class="text-sm font-medium text-green-800">Bot Detection</span>
+                    </div>
+                    <p class="text-xs text-green-600 mt-1">Active</p>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="text-sm font-medium text-blue-800">Protection Features</h4>
+                        <p class="text-xs text-blue-600 mt-1">
+                            Client-side protection includes: Right-click blocking, keyboard shortcut prevention,
+                            text selection disabling, DevTools detection, print screen blocking, and bot detection.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Actions -->
     <div class="admin-card">
         <div class="admin-card-header">
             <h2 class="text-lg md:text-xl font-semibold text-gray-900">Security Actions</h2>
         </div>
         <div class="admin-card-body">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <a href="{{ route('admin.security.events') }}" class="admin-btn admin-btn-primary w-full">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                     View Security Events
                 </a>
-                
+
                 <a href="{{ route('admin.security.audit-logs') }}" class="admin-btn admin-btn-secondary w-full">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                     </svg>
                     View Audit Logs
                 </a>
-                
+
+                <a href="{{ route('admin.security.protection-stats') }}" class="admin-btn admin-btn-info w-full">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Protection Stats
+                </a>
+
                 <form method="POST" action="{{ route('admin.security.clean-logs') }}" class="inline">
                     @csrf
                     <button type="submit" class="admin-btn admin-btn-warning w-full" onclick="return confirm('Are you sure you want to clean old logs?')">

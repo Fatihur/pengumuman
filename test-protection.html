@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Protection</title>
+    <meta name="csrf-token" content="test-token">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+        }
+        
+        .test-section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status.active {
+            background: #10b981;
+            color: white;
+        }
+        
+        .status.inactive {
+            background: #ef4444;
+            color: white;
+        }
+        
+        /* Global Protection Styles */
+        * {
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-touch-callout: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        
+        /* Allow selection for input elements */
+        input, textarea {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+        
+        /* Disable image dragging */
+        img {
+            -webkit-user-drag: none !important;
+            -khtml-user-drag: none !important;
+            -moz-user-drag: none !important;
+            -o-user-drag: none !important;
+            user-drag: none !important;
+            pointer-events: none !important;
+        }
+        
+        /* Disable text highlighting */
+        ::selection {
+            background: transparent !important;
+        }
+        
+        ::-moz-selection {
+            background: transparent !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Test Proteksi Client-side</h1>
+        <p>Halaman ini untuk menguji apakah proteksi klik kanan dan inspect element sudah bekerja dengan baik.</p>
+        
+        <div class="test-section">
+            <h3>📋 Status Proteksi</h3>
+            <div>
+                <span class="status active">Right-click Protection: ACTIVE</span><br><br>
+                <span class="status active">Keyboard Shortcuts: BLOCKED</span><br><br>
+                <span class="status active">Text Selection: DISABLED</span><br><br>
+                <span class="status active">DevTools Detection: MONITORING</span>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🧪 Instruksi Test</h3>
+            <ol>
+                <li><strong>Test Klik Kanan:</strong> Coba klik kanan di area manapun pada halaman ini</li>
+                <li><strong>Test Keyboard:</strong> Coba tekan F12, Ctrl+Shift+I, Ctrl+U</li>
+                <li><strong>Test Seleksi:</strong> Coba select/highlight teks ini</li>
+                <li><strong>Test Drag:</strong> Coba drag gambar di bawah</li>
+                <li><strong>Test DevTools:</strong> Coba buka Developer Tools</li>
+            </ol>
+        </div>
+        
+        <div class="test-section">
+            <h3>📝 Test Text Selection</h3>
+            <p>Ini adalah contoh teks yang seharusnya tidak bisa diselect. Jika proteksi bekerja, Anda tidak akan bisa menyeleksi teks ini dengan mouse atau keyboard.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>🖼️ Test Image Protection</h3>
+            <p>Coba drag gambar di bawah ini:</p>
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTgiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj4yMDB4MTUwPC90ZXh0Pgo8L3N2Zz4=" alt="Test Image" style="border: 1px solid #ccc; border-radius: 5px;">
+        </div>
+        
+        <div class="test-section">
+            <h3>⌨️ Test Input Elements</h3>
+            <p>Input elements masih bisa digunakan normal:</p>
+            <input type="text" placeholder="Anda masih bisa mengetik di sini" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px;"><br>
+            <textarea placeholder="Textarea juga masih berfungsi normal" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; height: 60px;"></textarea>
+        </div>
+        
+        <div class="test-section">
+            <h3>✅ Expected Results</h3>
+            <ul>
+                <li>Right-click akan menampilkan peringatan dan tidak menampilkan context menu</li>
+                <li>Keyboard shortcuts (F12, Ctrl+Shift+I, dll) akan diblokir dengan peringatan</li>
+                <li>Text tidak bisa diselect kecuali di input/textarea</li>
+                <li>Gambar tidak bisa di-drag</li>
+                <li>Developer Tools akan terdeteksi dan halaman akan blur</li>
+                <li>Semua events akan dicatat untuk monitoring</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Protection Script -->
+    <script>
+        /**
+         * Enhanced Client-side Protection Script
+         * Protects against right-click, keyboard shortcuts, and developer tools
+         */
+
+        // Immediate protection - execute right away
+        (function() {
+            'use strict';
+            
+            console.log('🔒 Initializing enhanced protection...');
+            
+            // Show warning function
+            function showWarning(message) {
+                // Remove existing warnings
+                const existing = document.querySelectorAll('.protection-warning');
+                existing.forEach(el => el.remove());
+                
+                // Create warning element
+                const warning = document.createElement('div');
+                warning.className = 'protection-warning';
+                warning.textContent = message;
+                warning.style.cssText = `
+                    position: fixed !important;
+                    top: 20px !important;
+                    right: 20px !important;
+                    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+                    color: white !important;
+                    padding: 15px 20px !important;
+                    border-radius: 8px !important;
+                    font-size: 14px !important;
+                    font-weight: 600 !important;
+                    z-index: 2147483647 !important;
+                    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3) !important;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                    max-width: 300px !important;
+                    word-wrap: break-word !important;
+                    animation: slideInWarning 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+                    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+                `;
+                
+                // Add to page
+                document.body.appendChild(warning);
+                
+                // Auto remove
+                setTimeout(() => {
+                    if (warning.parentNode) {
+                        warning.style.animation = 'slideOutWarning 0.3s ease-in';
+                        setTimeout(() => {
+                            if (warning.parentNode) {
+                                warning.remove();
+                            }
+                        }, 300);
+                    }
+                }, 3000);
+            }
+            
+            // Add warning animations
+            if (!document.getElementById('protection-styles')) {
+                const style = document.createElement('style');
+                style.id = 'protection-styles';
+                style.textContent = `
+                    @keyframes slideInWarning {
+                        0% { transform: translateX(100%) scale(0.8); opacity: 0; }
+                        100% { transform: translateX(0) scale(1); opacity: 1; }
+                    }
+                    @keyframes slideOutWarning {
+                        0% { transform: translateX(0) scale(1); opacity: 1; }
+                        100% { transform: translateX(100%) scale(0.8); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            // Log security attempts
+            function logAttempt(type, details = {}) {
+                console.warn('🚨 Security attempt blocked:', type, details);
+            }
+            
+            // Aggressive right-click protection
+            const blockRightClick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                showWarning('🚫 Klik kanan dinonaktifkan untuk keamanan!');
+                logAttempt('right_click_blocked', {
+                    element: e.target.tagName,
+                    className: e.target.className
+                });
+                return false;
+            };
+            
+            // Add multiple event listeners for right-click
+            document.addEventListener('contextmenu', blockRightClick, true);
+            document.addEventListener('contextmenu', blockRightClick, false);
+            window.addEventListener('contextmenu', blockRightClick, true);
+            
+            // Also block on document and body when ready
+            if (document.body) {
+                document.body.addEventListener('contextmenu', blockRightClick, true);
+            }
+            
+            document.addEventListener('DOMContentLoaded', function() {
+                if (document.body) {
+                    document.body.addEventListener('contextmenu', blockRightClick, true);
+                }
+                if (document.documentElement) {
+                    document.documentElement.addEventListener('contextmenu', blockRightClick, true);
+                }
+            });
+            
+            // Keyboard protection
+            const blockKeyboard = function(e) {
+                let blocked = false;
+                let message = '';
+                
+                // F12
+                if (e.keyCode === 123) {
+                    blocked = true;
+                    message = '🚫 F12 dinonaktifkan!';
+                }
+                
+                // Ctrl+Shift+I (DevTools)
+                if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                    blocked = true;
+                    message = '🚫 Developer Tools dinonaktifkan!';
+                }
+                
+                // Ctrl+Shift+J (Console)
+                if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
+                    blocked = true;
+                    message = '🚫 Console dinonaktifkan!';
+                }
+                
+                // Ctrl+U (View Source)
+                if (e.ctrlKey && e.keyCode === 85) {
+                    blocked = true;
+                    message = '🚫 View Source dinonaktifkan!';
+                }
+                
+                // Ctrl+S (Save)
+                if (e.ctrlKey && e.keyCode === 83) {
+                    blocked = true;
+                    message = '🚫 Save Page dinonaktifkan!';
+                }
+                
+                if (blocked) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+                    showWarning(message);
+                    logAttempt('keyboard_blocked', {
+                        keyCode: e.keyCode,
+                        ctrlKey: e.ctrlKey,
+                        shiftKey: e.shiftKey,
+                        altKey: e.altKey
+                    });
+                    return false;
+                }
+            };
+            
+            // Add keyboard protection
+            document.addEventListener('keydown', blockKeyboard, true);
+            window.addEventListener('keydown', blockKeyboard, true);
+            
+            // Check if element is input
+            function isInputElement(element) {
+                const inputTags = ['INPUT', 'TEXTAREA'];
+                return inputTags.includes(element.tagName) || element.contentEditable === 'true';
+            }
+            
+            // Text selection protection
+            const blockSelection = function(e) {
+                if (!isInputElement(e.target)) {
+                    e.preventDefault();
+                    logAttempt('text_selection_blocked', {
+                        element: e.target.tagName
+                    });
+                    return false;
+                }
+            };
+            
+            document.addEventListener('selectstart', blockSelection, true);
+            
+            // Drag protection
+            const blockDrag = function(e) {
+                e.preventDefault();
+                showWarning('🚫 Drag dinonaktifkan!');
+                logAttempt('drag_blocked', {
+                    element: e.target.tagName
+                });
+                return false;
+            };
+            
+            document.addEventListener('dragstart', blockDrag, true);
+            
+            // DevTools detection
+            let devToolsOpen = false;
+            setInterval(function() {
+                const threshold = 160;
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                
+                if ((widthThreshold || heightThreshold) && !devToolsOpen) {
+                    devToolsOpen = true;
+                    document.body.style.filter = 'blur(5px)';
+                    showWarning('🚫 Developer Tools terdeteksi! Halaman diblur untuk keamanan.');
+                    logAttempt('devtools_detected');
+                } else if (!widthThreshold && !heightThreshold && devToolsOpen) {
+                    devToolsOpen = false;
+                    document.body.style.filter = 'none';
+                }
+            }, 500);
+            
+            // Add protection indicator
+            setTimeout(function() {
+                if (document.body) {
+                    const indicator = document.createElement('div');
+                    indicator.textContent = '🔒 Protected';
+                    indicator.style.cssText = `
+                        position: fixed;
+                        bottom: 10px;
+                        left: 10px;
+                        background: rgba(34, 197, 94, 0.9);
+                        color: white;
+                        padding: 5px 10px;
+                        border-radius: 5px;
+                        font-size: 11px;
+                        font-weight: 500;
+                        z-index: 999998;
+                        opacity: 0.8;
+                        font-family: monospace;
+                        pointer-events: none;
+                    `;
+                    document.body.appendChild(indicator);
+                }
+            }, 1000);
+            
+            console.log('🔒 Enhanced protection activated successfully');
+            
+        })();
+    </script>
+</body>
+</html>

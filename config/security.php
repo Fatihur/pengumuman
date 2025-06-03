@@ -122,6 +122,7 @@ return [
     'monitoring' => [
         'enabled' => env('SECURITY_MONITORING_ENABLED', true),
         'retention_days' => env('SECURITY_LOG_RETENTION_DAYS', 90), // 3 months
+        'bot_detection_enabled' => env('BOT_DETECTION_ENABLED', false), // Disabled by default
         'suspicious_activity' => [
             'max_requests_per_minute' => env('MAX_REQUESTS_PER_MINUTE', 60),
             'max_failed_logins' => env('MAX_FAILED_LOGINS', 5),
