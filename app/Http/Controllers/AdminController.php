@@ -7,6 +7,7 @@ use App\Models\Student;
 use App\Models\Setting;
 use App\Imports\StudentsImport;
 use App\Exports\StudentsTemplateExport;
+use App\Exports\StudentsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
@@ -365,6 +366,40 @@ class AdminController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new StudentsTemplateExport(), 'template_import_siswa.xlsx');
+    }
+
+    /**
+     * Export data siswa ke Excel dengan format
+     */
+    public function exportStudentsExcel(Request $request)
+    {
+        // Get filters from request
+        $filters = [
+            'status_kelulusan' => $request->get('status_kelulusan'),
+            'kelas' => $request->get('kelas'),
+            'program_studi' => $request->get('program_studi'),
+            'search' => $request->get('search'),
+        ];
+
+        // Remove empty filters
+        $filters = array_filter($filters, function($value) {
+            return !empty($value);
+        });
+
+        // Generate filename with timestamp and filters
+        $filename = 'data_siswa_' . date('Y-m-d_H-i-s');
+
+        if (!empty($filters['status_kelulusan'])) {
+            $filename .= '_' . $filters['status_kelulusan'];
+        }
+
+        if (!empty($filters['kelas'])) {
+            $filename .= '_' . str_replace(' ', '_', $filters['kelas']);
+        }
+
+        $filename .= '.xlsx';
+
+        return Excel::download(new StudentsExport($filters), $filename);
     }
 
     /**

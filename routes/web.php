@@ -68,6 +68,7 @@ Route::middleware(['auth', 'admin.access', 'rate.limit:120,1'])->prefix('admin')
     // Bulk actions
     Route::post('/students/bulk-action', [AdminController::class, 'bulkAction'])->name('students.bulk-action');
     Route::get('/students/export', [AdminController::class, 'exportStudents'])->name('students.export');
+    Route::get('/students/export-excel', [AdminController::class, 'exportStudentsExcel'])->name('students.export.excel');
 
     // Import Excel
     Route::get('/students/import', [AdminController::class, 'importForm'])->name('students.import');
