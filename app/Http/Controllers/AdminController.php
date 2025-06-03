@@ -101,13 +101,39 @@ class AdminController extends Controller
     public function storeStudent(Request $request)
     {
         $request->validate([
-            'nisn' => 'required|unique:students',
-            'nis' => 'required|unique:students',
-            'nama' => 'required',
+            'nisn' => [
+                'required',
+                'numeric',
+                'digits:10',
+                'unique:students,nisn'
+            ],
+            'nis' => [
+                'required',
+                'numeric',
+                'unique:students,nis'
+            ],
+            'nama' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
-            'kelas' => 'required',
-            'program_studi' => 'required',
+            'kelas' => 'required|string',
+            'program_studi' => 'required|string',
             'status_kelulusan' => 'required|in:lulus,tidak_lulus',
+            'no_surat' => 'nullable|string|max:100',
+            'pesan_khusus' => 'nullable|string|max:1000',
+        ], [
+            'nisn.required' => 'NISN wajib diisi.',
+            'nisn.numeric' => 'NISN harus berupa angka.',
+            'nisn.digits' => 'NISN harus tepat 10 digit angka.',
+            'nisn.unique' => 'NISN sudah terdaftar.',
+            'nis.required' => 'NIS wajib diisi.',
+            'nis.numeric' => 'NIS harus berupa angka.',
+            'nis.unique' => 'NIS sudah terdaftar.',
+            'nama.required' => 'Nama lengkap wajib diisi.',
+            'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
+            'tanggal_lahir.date' => 'Format tanggal lahir tidak valid.',
+            'kelas.required' => 'Kelas wajib dipilih.',
+            'program_studi.required' => 'Program studi wajib dipilih.',
+            'status_kelulusan.required' => 'Status kelulusan wajib dipilih.',
+            'status_kelulusan.in' => 'Status kelulusan tidak valid.',
         ]);
 
         Student::create($request->all());
@@ -129,13 +155,39 @@ class AdminController extends Controller
     public function updateStudent(Request $request, Student $student)
     {
         $request->validate([
-            'nisn' => 'required|unique:students,nisn,' . $student->id,
-            'nis' => 'required|unique:students,nis,' . $student->id,
-            'nama' => 'required',
+            'nisn' => [
+                'required',
+                'numeric',
+                'digits:10',
+                'unique:students,nisn,' . $student->id
+            ],
+            'nis' => [
+                'required',
+                'numeric',
+                'unique:students,nis,' . $student->id
+            ],
+            'nama' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
-            'kelas' => 'required',
-            'program_studi' => 'required',
+            'kelas' => 'required|string',
+            'program_studi' => 'required|string',
             'status_kelulusan' => 'required|in:lulus,tidak_lulus',
+            'no_surat' => 'nullable|string|max:100',
+            'pesan_khusus' => 'nullable|string|max:1000',
+        ], [
+            'nisn.required' => 'NISN wajib diisi.',
+            'nisn.numeric' => 'NISN harus berupa angka.',
+            'nisn.digits' => 'NISN harus tepat 10 digit angka.',
+            'nisn.unique' => 'NISN sudah terdaftar.',
+            'nis.required' => 'NIS wajib diisi.',
+            'nis.numeric' => 'NIS harus berupa angka.',
+            'nis.unique' => 'NIS sudah terdaftar.',
+            'nama.required' => 'Nama lengkap wajib diisi.',
+            'tanggal_lahir.required' => 'Tanggal lahir wajib diisi.',
+            'tanggal_lahir.date' => 'Format tanggal lahir tidak valid.',
+            'kelas.required' => 'Kelas wajib dipilih.',
+            'program_studi.required' => 'Program studi wajib dipilih.',
+            'status_kelulusan.required' => 'Status kelulusan wajib dipilih.',
+            'status_kelulusan.in' => 'Status kelulusan tidak valid.',
         ]);
 
         $student->update($request->all());

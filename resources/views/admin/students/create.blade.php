@@ -61,31 +61,45 @@
                         <label for="nisn" class="block text-sm font-medium text-gray-700 mb-2">
                             NISN <span class="text-red-500">*</span>
                         </label>
-                        <input 
-                            type="text" 
-                            id="nisn" 
-                            name="nisn" 
+                        <input
+                            type="text"
+                            id="nisn"
+                            name="nisn"
                             value="{{ old('nisn') }}"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Nomor Induk Siswa Nasional"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('nisn') border-red-500 @enderror"
+                            placeholder="Nomor Induk Siswa Nasional (10 digit angka)"
                             maxlength="10"
+                            pattern="[0-9]{10}"
+                            title="NISN harus berupa 10 digit angka"
+                            inputmode="numeric"
                             required
                         >
+                        @error('nisn')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                        <p class="text-sm text-gray-500 mt-1">NISN harus berupa 10 digit angka</p>
                     </div>
 
                     <div>
                         <label for="nis" class="block text-sm font-medium text-gray-700 mb-2">
                             NIS <span class="text-red-500">*</span>
                         </label>
-                        <input 
-                            type="text" 
-                            id="nis" 
-                            name="nis" 
+                        <input
+                            type="text"
+                            id="nis"
+                            name="nis"
                             value="{{ old('nis') }}"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Nomor Induk Siswa"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('nis') border-red-500 @enderror"
+                            placeholder="Nomor Induk Siswa (angka)"
+                            pattern="[0-9]+"
+                            title="NIS harus berupa angka"
+                            inputmode="numeric"
                             required
                         >
+                        @error('nis')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                        <p class="text-sm text-gray-500 mt-1">NIS harus berupa angka</p>
                     </div>
 
                     <div>
@@ -254,28 +268,162 @@
 
 @push('scripts')
 <script>
-    // Auto-sync program studi with kelas selection
-    document.getElementById('kelas').addEventListener('change', function() {
-        const kelas = this.value;
-        const programStudi = document.getElementById('program_studi');
-        
-        if (kelas.includes('IPA')) {
-            programStudi.value = 'IPA';
-        } else if (kelas.includes('IPS')) {
-            programStudi.value = 'IPS';
-        } else if (kelas.includes('Bahasa')) {
-            programStudi.value = 'Bahasa';
-        }
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-sync program studi with kelas selection
+        document.getElementById('kelas').addEventListener('change', function() {
+            const kelas = this.value;
+            const programStudi = document.getElementById('program_studi');
 
-    // Auto-generate NISN if empty (demo purposes)
-    document.getElementById('nama').addEventListener('blur', function() {
-        const nisn = document.getElementById('nisn');
-        if (!nisn.value) {
-            // Generate a random 10-digit NISN for demo
-            const randomNISN = Math.floor(1000000000 + Math.random() * 9000000000);
-            nisn.value = randomNISN.toString();
+            if (kelas.includes('IPA')) {
+                programStudi.value = 'IPA';
+            } else if (kelas.includes('IPS')) {
+                programStudi.value = 'IPS';
+            } else if (kelas.includes('Bahasa')) {
+                programStudi.value = 'Bahasa';
+            }
+        });
+
+        // Numeric validation for NISN and NIS
+        function setupNumericValidation(elementId, maxLength = null) {
+            const element = document.getElementById(elementId);
+
+            // Only allow numeric input
+            element.addEventListener('input', function(e) {
+                // Remove any non-numeric characters
+                let value = e.target.value.replace(/[^0-9]/g, '');
+
+                // Apply max length if specified
+                if (maxLength && value.length > maxLength) {
+                    value = value.substring(0, maxLength);
+                }
+
+                e.target.value = value;
+
+                // Visual feedback
+                if (value.length > 0 && !/^[0-9]+$/.test(value)) {
+                    e.target.classList.add('border-red-500');
+                    e.target.classList.remove('border-gray-300');
+                } else {
+                    e.target.classList.remove('border-red-500');
+                    e.target.classList.add('border-gray-300');
+                }
+            });
+
+            // Prevent non-numeric keypress
+            element.addEventListener('keypress', function(e) {
+                // Allow: backspace, delete, tab, escape, enter
+                if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    (e.keyCode === 65 && e.ctrlKey === true) ||
+                    (e.keyCode === 67 && e.ctrlKey === true) ||
+                    (e.keyCode === 86 && e.ctrlKey === true) ||
+                    (e.keyCode === 88 && e.ctrlKey === true)) {
+                    return;
+                }
+
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Paste validation
+            element.addEventListener('paste', function(e) {
+                setTimeout(function() {
+                    let value = e.target.value.replace(/[^0-9]/g, '');
+                    if (maxLength && value.length > maxLength) {
+                        value = value.substring(0, maxLength);
+                    }
+                    e.target.value = value;
+                }, 10);
+            });
         }
+
+        // Setup validation for NISN (10 digits) and NIS (no limit)
+        setupNumericValidation('nisn', 10);
+        setupNumericValidation('nis');
+
+        // NISN specific validation
+        document.getElementById('nisn').addEventListener('blur', function() {
+            const value = this.value;
+            const errorElement = this.parentNode.querySelector('.nisn-error');
+
+            // Remove existing error
+            if (errorElement) {
+                errorElement.remove();
+            }
+
+            if (value.length > 0 && value.length !== 10) {
+                const error = document.createElement('p');
+                error.className = 'text-red-500 text-sm mt-1 nisn-error';
+                error.textContent = 'NISN harus tepat 10 digit angka';
+                this.parentNode.appendChild(error);
+                this.classList.add('border-red-500');
+                this.classList.remove('border-gray-300');
+            } else {
+                this.classList.remove('border-red-500');
+                this.classList.add('border-gray-300');
+            }
+        });
+
+        // NIS validation
+        document.getElementById('nis').addEventListener('blur', function() {
+            const value = this.value;
+            const errorElement = this.parentNode.querySelector('.nis-error');
+
+            // Remove existing error
+            if (errorElement) {
+                errorElement.remove();
+            }
+
+            if (value.length > 0 && !/^[0-9]+$/.test(value)) {
+                const error = document.createElement('p');
+                error.className = 'text-red-500 text-sm mt-1 nis-error';
+                error.textContent = 'NIS harus berupa angka';
+                this.parentNode.appendChild(error);
+                this.classList.add('border-red-500');
+                this.classList.remove('border-gray-300');
+            } else {
+                this.classList.remove('border-red-500');
+                this.classList.add('border-gray-300');
+            }
+        });
+
+        // Auto-generate NISN if empty (demo purposes)
+        document.getElementById('nama').addEventListener('blur', function() {
+            const nisn = document.getElementById('nisn');
+            if (!nisn.value) {
+                // Generate a random 10-digit NISN for demo
+                const randomNISN = Math.floor(1000000000 + Math.random() * 9000000000);
+                nisn.value = randomNISN.toString();
+            }
+        });
+
+        // Form submission validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const nisn = document.getElementById('nisn').value;
+            const nis = document.getElementById('nis').value;
+            let hasError = false;
+
+            // Validate NISN
+            if (nisn.length !== 10 || !/^[0-9]{10}$/.test(nisn)) {
+                alert('NISN harus berupa 10 digit angka');
+                document.getElementById('nisn').focus();
+                hasError = true;
+            }
+
+            // Validate NIS
+            if (nis.length === 0 || !/^[0-9]+$/.test(nis)) {
+                alert('NIS harus berupa angka');
+                document.getElementById('nis').focus();
+                hasError = true;
+            }
+
+            if (hasError) {
+                e.preventDefault();
+                return false;
+            }
+        });
     });
 </script>
 @endpush

@@ -7,7 +7,7 @@
 (function() {
     'use strict';
     
-    console.log('🔒 Initializing enhanced protection...');
+    // console.log('🔒 Initializing enhanced protection...'); // Disabled to prevent console detection
     
     // Show warning function
     function showWarning(message) {
@@ -258,44 +258,57 @@
         return false;
     });
     
-    // DevTools detection
+    // DevTools detection (improved to reduce false positives)
     let devToolsOpen = false;
-    setInterval(function() {
-        const threshold = 160;
-        const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-        const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-        
-        if ((widthThreshold || heightThreshold) && !devToolsOpen) {
-            devToolsOpen = true;
-            document.body.style.filter = 'blur(5px)';
-            document.body.style.pointerEvents = 'none';
-            showWarning('🚫 Developer Tools terdeteksi! Halaman diblur untuk keamanan.');
-            logAttempt('devtools_detected', {
-                outerWidth: window.outerWidth,
-                innerWidth: window.innerWidth,
-                outerHeight: window.outerHeight,
-                innerHeight: window.innerHeight
-            });
-        } else if (!widthThreshold && !heightThreshold && devToolsOpen) {
-            devToolsOpen = false;
-            document.body.style.filter = 'none';
-            document.body.style.pointerEvents = 'auto';
-        }
-    }, 500);
-    
-    // Console detection
-    let consoleDetected = false;
-    const originalConsole = window.console;
-    Object.defineProperty(window, 'console', {
-        get: function() {
-            if (!consoleDetected) {
-                consoleDetected = true;
-                showWarning('🚫 Console access terdeteksi!');
-                logAttempt('console_access_detected');
+    let detectionCount = 0;
+
+    // Wait a bit after page load to avoid false positives during refresh
+    setTimeout(function() {
+        setInterval(function() {
+            const threshold = 200; // Increased threshold to reduce false positives
+            const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+            const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+
+            if ((widthThreshold || heightThreshold)) {
+                detectionCount++;
+                // Only trigger after multiple detections to avoid false positives
+                if (detectionCount > 3 && !devToolsOpen) {
+                    devToolsOpen = true;
+                    document.body.style.filter = 'blur(5px)';
+                    document.body.style.pointerEvents = 'none';
+                    showWarning('🚫 Developer Tools terdeteksi! Halaman diblur untuk keamanan.');
+                    logAttempt('devtools_detected', {
+                        outerWidth: window.outerWidth,
+                        innerWidth: window.innerWidth,
+                        outerHeight: window.outerHeight,
+                        innerHeight: window.innerHeight,
+                        detectionCount: detectionCount
+                    });
+                }
+            } else {
+                detectionCount = 0; // Reset counter
+                if (devToolsOpen) {
+                    devToolsOpen = false;
+                    document.body.style.filter = 'none';
+                    document.body.style.pointerEvents = 'auto';
+                }
             }
-            return originalConsole;
-        }
-    });
+        }, 1000); // Increased interval to reduce CPU usage
+    }, 2000); // Wait 2 seconds after page load
+    
+    // Console detection (disabled - causing false positives on page refresh)
+    // let consoleDetected = false;
+    // const originalConsole = window.console;
+    // Object.defineProperty(window, 'console', {
+    //     get: function() {
+    //         if (!consoleDetected) {
+    //             consoleDetected = true;
+    //             showWarning('🚫 Console access terdeteksi!');
+    //             logAttempt('console_access_detected');
+    //         }
+    //         return originalConsole;
+    //     }
+    // });
     
     // Add protection indicator
     setTimeout(function() {
@@ -336,6 +349,6 @@
         return originalToString.call(this);
     };
     
-    console.log('🔒 Enhanced protection activated successfully');
+    // console.log('🔒 Enhanced protection activated successfully'); // Disabled to prevent console detection
     
 })();

@@ -87,7 +87,7 @@
             // Replace image source
             img.src = dataURL;
             
-            console.log('Background removed from school logo using canvas processing');
+            // console.log('Background removed from school logo using canvas processing'); // Disabled to prevent console detection
             
         } catch (error) {
             console.warn('Canvas background removal failed:', error);
@@ -119,7 +119,7 @@
         img.style.background = 'transparent';
         img.style.backgroundColor = 'rgba(0, 0, 0, 0)';
         
-        console.log('Applied fallback CSS background removal');
+        // console.log('Applied fallback CSS background removal'); // Disabled to prevent console detection
     }
     
     // SVG filter approach
@@ -154,7 +154,7 @@
             logo.style.filter = 'url(#remove-white-filter) contrast(1.2) brightness(1.1)';
         });
         
-        console.log('SVG filter created and applied');
+        // console.log('SVG filter created and applied'); // Disabled to prevent console detection
     }
     
     // Observer to handle dynamically loaded images
@@ -196,7 +196,7 @@
         setTimeout(removeLogoBackground, 1000);
         setTimeout(removeLogoBackground, 2000);
         
-        console.log('Logo background remover initialized');
+        // console.log('Logo background remover initialized'); // Disabled to prevent console detection
     }
     
     // Run when DOM is ready
