@@ -464,6 +464,11 @@ class AdminController extends Controller
             'sk_opening_text' => 'required|string',
             'sk_closing_text' => 'required|string',
             'sk_graduation_statement' => 'required|string',
+
+            // Signature validation
+            'signature_location' => 'required|string|max:100',
+            'signature_date_format' => 'required|in:auto,custom,graduation_date',
+            'signature_custom_date' => 'nullable|date',
         ]);
 
         Setting::setValue('government_name', $request->government_name);
@@ -502,6 +507,11 @@ class AdminController extends Controller
         Setting::setValue('sk_graduation_statement', $request->sk_graduation_statement);
         Setting::setValue('sk_show_photo', $request->has('sk_show_photo'));
         Setting::setValue('sk_show_qr', $request->has('sk_show_qr'));
+
+        // Save signature settings
+        Setting::setValue('signature_location', $request->signature_location);
+        Setting::setValue('signature_date_format', $request->signature_date_format);
+        Setting::setValue('signature_custom_date', $request->signature_custom_date);
 
         return back()->with('success', 'Pengaturan berhasil diperbarui.');
     }

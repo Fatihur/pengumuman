@@ -175,7 +175,8 @@ class StudentsTemplateExport implements FromArray, WithHeadings, WithStyles, Wit
             "CATATAN PENTING:",
             "• Header harus menggunakan huruf kecil (lowercase)",
             "• NISN dan NIS boleh berupa angka (akan dikonversi ke string)",
-            "• Nomor surat akan di-generate otomatis oleh sistem",
+            "• Nomor surat akan di-generate otomatis dengan format: SK/001/Januari/2025",
+            "• Format bulan menggunakan nama bulan Indonesia (Januari, Februari, dst)",
             "• Hapus baris contoh data sebelum mengisi data siswa",
             "• Pastikan format data sesuai dengan petunjuk",
             "• NISN harus unik dan tidak boleh duplikat"

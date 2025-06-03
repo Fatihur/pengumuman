@@ -385,7 +385,7 @@
                 </tr>
                 <tr>
                     <td>Tempat, Tanggal Lahir</td>
-                    <td>: Jakarta, {{ $student->tanggal_lahir->format('d F Y') }}</td>
+                    <td>: Jakarta, {{ \App\Helpers\IndonesianDate::formatMedium($student->tanggal_lahir) }}</td>
                 </tr>
                 <tr>
                     <td>Kelas</td>
@@ -427,7 +427,7 @@
         @endif
 
         <div class="signature-box">
-            <p style="font-size: 11px; margin-bottom: 5px;">Jakarta, {{ now()->format('d F Y') }}<br>Kepala Sekolah</p>
+            <p style="font-size: 11px; margin-bottom: 5px;">{{ \App\Helpers\IndonesianDate::getSignatureLocationDate($student) }}<br>Kepala Sekolah</p>
             <div class="signature-line"></div>
             <p style="font-size: 11px; margin: 0;"><strong>{{ $schoolData['principal_name'] }}</strong><br>
                 @if ($schoolData['principal_nip'])
@@ -439,7 +439,7 @@
 
     <!-- Footer -->
     <div class="footer">
-        <p>Dokumen ini dicetak secara otomatis pada {{ now()->format('d F Y, H:i:s') }}</p>
+        <p>Dokumen ini dicetak secara otomatis pada {{ \App\Helpers\IndonesianDate::formatMedium(now()) }}, {{ now()->format('H:i:s') }}</p>
 
         @if($schoolData['sk_show_qr'] ?? true)
         <!-- QR Code Footer -->

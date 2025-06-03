@@ -197,23 +197,33 @@ class StudentsImport implements
      */
     private function generateNoSurat(): string
     {
-        // Ambil nomor surat terakhir untuk tahun ini
+        // Ambil nomor surat terakhir untuk tahun dan bulan ini
         $currentYear = date('Y');
+        $currentMonth = date('n'); // 1-12
+
+        // Get Indonesian month name
+        $monthNames = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+        $monthName = $monthNames[$currentMonth];
+
         $lastStudent = Student::whereNotNull('no_surat')
-            ->where('no_surat', 'like', "%/{$currentYear}")
+            ->where('no_surat', 'like', "%/{$monthName}/{$currentYear}")
             ->orderBy('no_surat', 'desc')
             ->first();
 
         $nextNumber = 1;
         if ($lastStudent && $lastStudent->no_surat) {
-            // Extract nomor dari format SK/001/XII/2025
-            preg_match('/SK\/(\d+)\/XII\/\d{4}/', $lastStudent->no_surat, $matches);
+            // Extract nomor dari format SK/001/Januari/2025
+            preg_match('/SK\/(\d+)\/' . preg_quote($monthName) . '\/\d{4}/', $lastStudent->no_surat, $matches);
             if (isset($matches[1])) {
                 $nextNumber = intval($matches[1]) + 1;
             }
         }
 
-        // Format: SK/001/XII/2025
-        return sprintf('SK/%03d/XII/%s', $nextNumber, $currentYear);
+        // Format: SK/001/Januari/2025
+        return sprintf('SK/%03d/%s/%s', $nextNumber, $monthName, $currentYear);
     }
 }

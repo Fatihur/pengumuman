@@ -264,6 +264,92 @@
                 </div>
             </div>
 
+            <!-- Signature Settings Section -->
+            <div class="px-8 py-6 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">Pengaturan Tanda Tangan</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Signature Location -->
+                    <div>
+                        <label for="signature_location" class="block text-sm font-medium text-gray-700 mb-2">
+                            Lokasi Tanda Tangan <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="signature_location"
+                            name="signature_location"
+                            value="{{ old('signature_location', $settings['signature_location'] ?? 'Jakarta') }}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Contoh: Jakarta, Bandung, Surabaya"
+                            required
+                        >
+                        <p class="text-xs text-gray-500 mt-1">
+                            Lokasi yang akan ditampilkan di tanda tangan surat kelulusan
+                        </p>
+                    </div>
+
+                    <!-- Signature Date Format -->
+                    <div>
+                        <label for="signature_date_format" class="block text-sm font-medium text-gray-700 mb-2">
+                            Format Tanggal Tanda Tangan <span class="text-red-500">*</span>
+                        </label>
+                        <select
+                            id="signature_date_format"
+                            name="signature_date_format"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                            onchange="toggleCustomDateField()"
+                        >
+                            <option value="auto" {{ old('signature_date_format', $settings['signature_date_format'] ?? 'auto') == 'auto' ? 'selected' : '' }}>
+                                Tanggal Sekarang (Otomatis)
+                            </option>
+                            <option value="custom" {{ old('signature_date_format', $settings['signature_date_format'] ?? 'auto') == 'custom' ? 'selected' : '' }}>
+                                Tanggal Khusus
+                            </option>
+                            <option value="graduation_date" {{ old('signature_date_format', $settings['signature_date_format'] ?? 'auto') == 'graduation_date' ? 'selected' : '' }}>
+                                Tanggal Input Siswa
+                            </option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">
+                            Pilih format tanggal yang akan digunakan untuk tanda tangan
+                        </p>
+                    </div>
+
+                    <!-- Custom Date Field -->
+                    <div id="custom_date_field" class="md:col-span-2" style="display: {{ old('signature_date_format', $settings['signature_date_format'] ?? 'auto') == 'custom' ? 'block' : 'none' }};">
+                        <label for="signature_custom_date" class="block text-sm font-medium text-gray-700 mb-2">
+                            Tanggal Khusus
+                        </label>
+                        <input
+                            type="date"
+                            id="signature_custom_date"
+                            name="signature_custom_date"
+                            value="{{ old('signature_custom_date', $settings['signature_custom_date'] ?? '') }}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                        <p class="text-xs text-gray-500 mt-1">
+                            Tanggal khusus yang akan digunakan untuk semua surat kelulusan
+                        </p>
+                    </div>
+
+                    <!-- Preview -->
+                    <div class="md:col-span-2 bg-blue-50 border border-blue-200 rounded-md p-4">
+                        <h4 class="text-sm font-medium text-blue-800 mb-2">Preview Tanda Tangan:</h4>
+                        <div class="text-sm text-blue-700" id="signature_preview">
+                            <span id="preview_location">{{ $settings['signature_location'] ?? 'Jakarta' }}</span>,
+                            <span id="preview_date">
+                                @if(($settings['signature_date_format'] ?? 'auto') == 'custom' && !empty($settings['signature_custom_date']))
+                                    {{ \App\Helpers\IndonesianDate::formatMedium($settings['signature_custom_date']) }}
+                                @else
+                                    {{ \App\Helpers\IndonesianDate::formatMedium(now()) }}
+                                @endif
+                            </span>
+                            <br>Kepala Sekolah
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- SK Settings Section -->
             <div class="px-8 py-6 border-b border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-900 mb-6">Pengaturan Surat Keterangan</h2>
@@ -596,6 +682,70 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial preview
     updatePreview();
+});
+
+// Signature settings functions
+function toggleCustomDateField() {
+    const dateFormat = document.getElementById('signature_date_format').value;
+    const customDateField = document.getElementById('custom_date_field');
+
+    if (dateFormat === 'custom') {
+        customDateField.style.display = 'block';
+    } else {
+        customDateField.style.display = 'none';
+    }
+
+    updateSignaturePreview();
+}
+
+function updateSignaturePreview() {
+    const location = document.getElementById('signature_location').value || 'Jakarta';
+    const dateFormat = document.getElementById('signature_date_format').value;
+    const customDate = document.getElementById('signature_custom_date').value;
+
+    const previewLocation = document.getElementById('preview_location');
+    const previewDate = document.getElementById('preview_date');
+
+    previewLocation.textContent = location;
+
+    let dateText = '';
+    const today = new Date();
+    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+    if (dateFormat === 'custom' && customDate) {
+        const date = new Date(customDate);
+        dateText = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    } else {
+        dateText = `${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+    }
+
+    previewDate.textContent = dateText;
+}
+
+// Add event listeners for signature settings
+document.addEventListener('DOMContentLoaded', function() {
+    const locationInput = document.getElementById('signature_location');
+    const dateFormatSelect = document.getElementById('signature_date_format');
+    const customDateInput = document.getElementById('signature_custom_date');
+
+    if (locationInput) {
+        locationInput.addEventListener('input', updateSignaturePreview);
+    }
+
+    if (dateFormatSelect) {
+        dateFormatSelect.addEventListener('change', function() {
+            toggleCustomDateField();
+            updateSignaturePreview();
+        });
+    }
+
+    if (customDateInput) {
+        customDateInput.addEventListener('change', updateSignaturePreview);
+    }
+
+    // Initial signature preview
+    updateSignaturePreview();
 });
 </script>
 @endsection
