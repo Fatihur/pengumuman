@@ -152,7 +152,7 @@
     <footer class="bg-gray-800 text-white py-8 mt-16">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <p>&copy; {{ date('Y') }} Sistem Pengumuman Kelulusan. All rights reserved.</p>
-            <p class="text-gray-400 text-sm mt-2">Dibuat dengan ❤️ untuk pendidikan Indonesia</p>
+            <p class="text-gray-400 text-sm mt-2">Made with ❤️ by <a href="https://github.com/fatihur" class="underline">Fatih</a></p>
         </div>
     </footer>
 
