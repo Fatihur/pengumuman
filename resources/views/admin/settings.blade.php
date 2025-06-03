@@ -3,49 +3,45 @@
 @section('title', 'Pengaturan - Admin Panel')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="admin-container max-w-4xl mx-auto">
     <!-- Header -->
-    <div class="mb-8">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Pengaturan Sistem</h1>
-                <p class="text-gray-600">Kelola konfigurasi sekolah dan sistem pengumuman</p>
-            </div>
-            <a href="{{ route('admin.dashboard') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition duration-300">
-                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="admin-header flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Pengaturan Sistem</h1>
+            <p class="text-gray-600 text-sm md:text-base">Kelola konfigurasi sekolah dan sistem pengumuman</p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ route('admin.dashboard') }}" class="admin-btn admin-btn-secondary text-xs md:text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
-                Kembali ke Dashboard
+                <span class="hide-mobile">Kembali ke Dashboard</span>
             </a>
         </div>
     </div>
 
     <!-- Alert Messages -->
     @if(session('success'))
-        <div class="alert bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                {{ session('success') }}
-            </div>
+        <div class="admin-alert admin-alert-success">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {{ session('success') }}
         </div>
     @endif
 
     @if(session('error'))
-        <div class="alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                {{ session('error') }}
-            </div>
+        <div class="admin-alert admin-alert-error">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {{ session('error') }}
         </div>
     @endif
 
     @if($errors->any())
-        <div class="alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            <ul class="list-disc list-inside">
+        <div class="admin-alert admin-alert-error">
+            <ul class="list-disc list-inside space-y-1">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -54,18 +50,19 @@
     @endif
 
     <!-- Settings Form -->
-    <div class="bg-white rounded-lg card-shadow">
+    <div class="admin-card">
         <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
             <!-- Government Information Section -->
-            <div class="px-8 py-6 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-900 mb-6">Informasi Pemerintah</h2>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="admin-card-header">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-900">Informasi Pemerintah</h2>
+            </div>
+            <div class="admin-card-body border-b border-gray-200">
+                <div class="admin-form-grid grid gap-6">
                     <div>
-                        <label for="government_name" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="government_name" class="admin-label">
                             Nama Pemerintah <span class="text-red-500">*</span>
                         </label>
                         <input
@@ -73,14 +70,14 @@
                             id="government_name"
                             name="government_name"
                             value="{{ old('government_name', $settings['government_name']) }}"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            class="admin-input"
                             placeholder="Contoh: PEMERINTAH PROVINSI DKI JAKARTA"
                             required
                         >
                     </div>
 
                     <div>
-                        <label for="department_name" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="department_name" class="admin-label">
                             Nama Dinas <span class="text-red-500">*</span>
                         </label>
                         <input
@@ -88,14 +85,14 @@
                             id="department_name"
                             name="department_name"
                             value="{{ old('department_name', $settings['department_name']) }}"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            class="admin-input"
                             placeholder="Contoh: DINAS PENDIDIKAN"
                             required
                         >
                     </div>
 
-                    <div class="md:col-span-2">
-                        <label for="government_logo" class="block text-sm font-medium text-gray-700 mb-2">
+                    <div class="md:col-span-2 lg:col-span-3">
+                        <label for="government_logo" class="admin-label">
                             Logo Pemerintah
                         </label>
                         <input
@@ -103,13 +100,13 @@
                             id="government_logo"
                             name="government_logo"
                             accept="image/*"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            class="admin-input"
                         >
-                        <p class="text-sm text-gray-500 mt-1">Format: JPG, PNG, GIF. Maksimal 2MB. Logo akan ditampilkan di sebelah kiri header.</p>
+                        <p class="text-xs md:text-sm text-gray-500 mt-1">Format: JPG, PNG, GIF. Maksimal 2MB. Logo akan ditampilkan di sebelah kiri header.</p>
                         @if($settings['government_logo'])
                             <div class="mt-2">
-                                <img src="{{ asset('storage/' . $settings['government_logo']) }}" alt="Logo Pemerintah" class="h-16 w-16 object-cover rounded">
-                                <p class="text-sm text-gray-600">Logo pemerintah saat ini</p>
+                                <img src="{{ asset('storage/' . $settings['government_logo']) }}" alt="Logo Pemerintah" class="h-12 w-12 md:h-16 md:w-16 object-cover rounded">
+                                <p class="text-xs md:text-sm text-gray-600">Logo pemerintah saat ini</p>
                             </div>
                         @endif
                     </div>

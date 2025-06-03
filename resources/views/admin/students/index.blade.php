@@ -3,94 +3,88 @@
 @section('title', 'Data Siswa - Admin Panel')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="admin-container max-w-7xl mx-auto">
     <!-- Header -->
-    <div class="mb-8">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Data Siswa</h1>
-                <p class="text-gray-600">Kelola informasi siswa dan status kelulusan</p>
-            </div>
-            <div class="flex space-x-3">
-                <a href="{{ route('admin.dashboard') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition duration-300">
-                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Dashboard
-                </a>
-                <a href="{{ route('admin.students.create') }}" class="btn-primary text-white px-4 py-2 rounded-md hover:shadow-lg transition duration-300">
-                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Tambah Siswa
-                </a>
-            </div>
+    <div class="admin-header flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Data Siswa</h1>
+            <p class="text-gray-600 text-sm md:text-base">Kelola informasi siswa dan status kelulusan</p>
+        </div>
+        <div class="header-actions flex gap-2">
+            <a href="{{ route('admin.dashboard') }}" class="admin-btn admin-btn-secondary text-xs md:text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                <span class="hide-mobile">Dashboard</span>
+            </a>
+            <a href="{{ route('admin.students.create') }}" class="admin-btn admin-btn-primary text-xs md:text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <span class="hide-mobile">Tambah Siswa</span>
+            </a>
         </div>
     </div>
 
     <!-- Alert Messages -->
     @if(session('success'))
-        <div class="alert bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                {{ session('success') }}
-            </div>
+        <div class="admin-alert admin-alert-success">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {{ session('success') }}
         </div>
     @endif
 
     @if(session('error'))
-        <div class="alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                {{ session('error') }}
-            </div>
+        <div class="admin-alert admin-alert-error">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {{ session('error') }}
         </div>
     @endif
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white rounded-lg card-shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-blue-100">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="stats-grid grid gap-6 mb-8">
+        <div class="admin-card stat-card">
+            <div class="flex items-center p-4 md:p-6">
+                <div class="stat-icon p-2 md:p-3 rounded-full bg-blue-100 flex-shrink-0">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                     </svg>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Total Siswa</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $students->total() }}</p>
+                <div class="ml-3 md:ml-4 min-w-0 flex-1">
+                    <p class="text-xs md:text-sm font-medium text-gray-500 truncate">Total Siswa</p>
+                    <p class="stat-value text-xl md:text-2xl font-bold text-gray-900">{{ $students->total() }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg card-shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-green-100">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="admin-card stat-card">
+            <div class="flex items-center p-4 md:p-6">
+                <div class="stat-icon p-2 md:p-3 rounded-full bg-green-100 flex-shrink-0">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Lulus</p>
-                    <p class="text-2xl font-bold text-green-600">{{ $students->where('status_kelulusan', 'lulus')->count() }}</p>
+                <div class="ml-3 md:ml-4 min-w-0 flex-1">
+                    <p class="text-xs md:text-sm font-medium text-gray-500 truncate">Lulus</p>
+                    <p class="stat-value text-xl md:text-2xl font-bold text-green-600">{{ $students->where('status_kelulusan', 'lulus')->count() }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg card-shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-red-100">
-                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="admin-card stat-card">
+            <div class="flex items-center p-4 md:p-6">
+                <div class="stat-icon p-2 md:p-3 rounded-full bg-red-100 flex-shrink-0">
+                    <svg class="w-5 h-5 md:w-6 md:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Tidak Lulus</p>
-                    <p class="text-2xl font-bold text-red-600">{{ $students->where('status_kelulusan', 'tidak_lulus')->count() }}</p>
+                <div class="ml-3 md:ml-4 min-w-0 flex-1">
+                    <p class="text-xs md:text-sm font-medium text-gray-500 truncate">Tidak Lulus</p>
+                    <p class="stat-value text-xl md:text-2xl font-bold text-red-600">{{ $students->where('status_kelulusan', 'tidak_lulus')->count() }}</p>
                 </div>
             </div>
         </div>
