@@ -376,7 +376,7 @@ class AdminController extends Controller
             // Add BOM for UTF-8
             fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
 
-            // Header dengan contoh data
+            // Header dengan contoh data (no_surat dihapus karena auto-generated)
             fputcsv($file, [
                 'nisn',
                 'nis',
@@ -385,11 +385,11 @@ class AdminController extends Controller
                 'kelas',
                 'program_studi',
                 'status_kelulusan',
-                'pesan_khusus',
-                'no_surat'
+                'pesan_khusus'
+                // no_surat akan di-generate otomatis oleh sistem
             ]);
 
-            // Contoh data
+            // Contoh data (tanpa no_surat karena auto-generated)
             fputcsv($file, [
                 '1234567890',
                 '12345',
@@ -398,8 +398,8 @@ class AdminController extends Controller
                 'XII IPA 1',
                 'IPA',
                 'lulus',
-                'Selamat atas kelulusannya',
-                'SK/001/2024'
+                'Selamat atas kelulusannya'
+                // no_surat akan di-generate: SK/001/XII/2025
             ]);
 
             fputcsv($file, [
@@ -409,9 +409,9 @@ class AdminController extends Controller
                 '2005-03-20',
                 'XII IPS 2',
                 'IPS',
-                'lulus',
-                '',
-                ''
+                'tidak_lulus',
+                'Jangan menyerah, terus belajar dan perbaiki diri'
+                // no_surat kosong untuk yang tidak lulus
             ]);
 
             fclose($file);

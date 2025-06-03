@@ -82,6 +82,12 @@ class StudentsImport implements
                 }
             }
 
+            // Generate nomor surat otomatis untuk siswa yang lulus
+            $noSurat = null;
+            if ($statusKelulusan === 'lulus') {
+                $noSurat = $this->generateNoSurat();
+            }
+
             $this->importedCount++;
 
             return new Student([
@@ -93,7 +99,7 @@ class StudentsImport implements
                 'program_studi' => $row['program_studi'] ?? '',
                 'status_kelulusan' => $statusKelulusan,
                 'pesan_khusus' => $row['pesan_khusus'] ?? null,
-                'no_surat' => $row['no_surat'] ?? null,
+                'no_surat' => $noSurat, // Auto-generated, tidak dari Excel
             ]);
 
         } catch (Throwable $e) {
@@ -117,7 +123,7 @@ class StudentsImport implements
             'program_studi' => 'nullable|string|max:100',
             'status_kelulusan' => 'nullable|string',
             'pesan_khusus' => 'nullable|string',
-            'no_surat' => 'nullable|string|max:100',
+            // no_surat dihapus karena akan di-generate otomatis
         ];
     }
 
@@ -184,5 +190,30 @@ class StudentsImport implements
         foreach ($failures as $failure) {
             $this->errors[] = "Baris {$failure->row()}: " . implode(', ', $failure->errors());
         }
+    }
+
+    /**
+     * Generate nomor surat otomatis untuk siswa yang lulus
+     */
+    private function generateNoSurat(): string
+    {
+        // Ambil nomor surat terakhir untuk tahun ini
+        $currentYear = date('Y');
+        $lastStudent = Student::whereNotNull('no_surat')
+            ->where('no_surat', 'like', "%/{$currentYear}")
+            ->orderBy('no_surat', 'desc')
+            ->first();
+
+        $nextNumber = 1;
+        if ($lastStudent && $lastStudent->no_surat) {
+            // Extract nomor dari format SK/001/XII/2025
+            preg_match('/SK\/(\d+)\/XII\/\d{4}/', $lastStudent->no_surat, $matches);
+            if (isset($matches[1])) {
+                $nextNumber = intval($matches[1]) + 1;
+            }
+        }
+
+        // Format: SK/001/XII/2025
+        return sprintf('SK/%03d/XII/%s', $nextNumber, $currentYear);
     }
 }

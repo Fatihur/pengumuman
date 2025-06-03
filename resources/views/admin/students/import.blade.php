@@ -112,6 +112,7 @@
                                         <li>NISN harus unik dan tidak boleh kosong</li>
                                         <li>Data yang sudah ada akan dilewati</li>
                                         <li>Format tanggal: YYYY-MM-DD atau DD/MM/YYYY</li>
+                                        <li><strong>Nomor surat akan di-generate otomatis</strong> - tidak perlu diisi</li>
                                     </ul>
                                 </div>
                             </div>
@@ -189,9 +190,9 @@
                             <span class="font-medium text-gray-900">Pesan Khusus:</span>
                             <span class="text-gray-600">Opsional</span>
                         </div>
-                        <div>
-                            <span class="font-medium text-gray-900">No Surat:</span>
-                            <span class="text-gray-600">Opsional</span>
+                        <div class="bg-green-50 p-3 rounded-md border border-green-200">
+                            <span class="font-medium text-green-800">📝 Nomor Surat:</span>
+                            <span class="text-green-700">Akan di-generate otomatis oleh sistem untuk siswa yang lulus</span>
                         </div>
                     </div>
                 </div>
