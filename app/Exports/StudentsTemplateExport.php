@@ -79,14 +79,14 @@ class StudentsTemplateExport implements FromArray, WithHeadings, WithStyles, Wit
     public function headings(): array
     {
         return [
-            'NISN',
-            'NIS',
-            'Nama Lengkap',
-            'Tanggal Lahir',
-            'Kelas',
-            'Program Studi',
-            'Status Kelulusan',
-            'Pesan Khusus'
+            'nisn',
+            'nis',
+            'nama_lengkap',
+            'tanggal_lahir',
+            'kelas',
+            'program_studi',
+            'status_kelulusan',
+            'pesan_khusus'
         ];
     }
 
@@ -163,16 +163,18 @@ class StudentsTemplateExport implements FromArray, WithHeadings, WithStyles, Wit
 
         // Add instructions
         $instructions = [
-            "1. NISN: Nomor Induk Siswa Nasional (10 digit angka, wajib diisi)",
-            "2. NIS: Nomor Induk Siswa (angka, wajib diisi)",
-            "3. Nama Lengkap: Nama lengkap siswa (wajib diisi)",
-            "4. Tanggal Lahir: Format YYYY-MM-DD (contoh: 2005-01-15)",
-            "5. Kelas: Contoh XII IPA 1, XII IPS 2, XII Bahasa",
-            "6. Program Studi: IPA, IPS, atau Bahasa",
-            "7. Status Kelulusan: lulus atau tidak_lulus",
-            "8. Pesan Khusus: Pesan untuk siswa (opsional)",
+            "1. nisn: Nomor Induk Siswa Nasional (angka, wajib diisi)",
+            "2. nis: Nomor Induk Siswa (angka, opsional)",
+            "3. nama_lengkap: Nama lengkap siswa (teks, wajib diisi)",
+            "4. tanggal_lahir: Format YYYY-MM-DD (contoh: 2005-01-15)",
+            "5. kelas: Contoh XII IPA 1, XII IPS 2, XII Bahasa",
+            "6. program_studi: IPA, IPS, atau Bahasa",
+            "7. status_kelulusan: lulus atau tidak_lulus",
+            "8. pesan_khusus: Pesan untuk siswa (opsional)",
             "",
             "CATATAN PENTING:",
+            "• Header harus menggunakan huruf kecil (lowercase)",
+            "• NISN dan NIS boleh berupa angka (akan dikonversi ke string)",
             "• Nomor surat akan di-generate otomatis oleh sistem",
             "• Hapus baris contoh data sebelum mengisi data siswa",
             "• Pastikan format data sesuai dengan petunjuk",

@@ -52,11 +52,11 @@
         </div>
     @endif
 
-    @if(session('errors'))
+    @if(session('import_errors'))
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-            <div class="font-bold mb-2">Detail Error:</div>
+            <div class="font-bold mb-2">Detail Error Import:</div>
             <div class="max-h-40 overflow-y-auto">
-                @foreach(session('errors') as $error)
+                @foreach(session('import_errors') as $error)
                     <div class="text-sm">• {{ $error }}</div>
                 @endforeach
             </div>

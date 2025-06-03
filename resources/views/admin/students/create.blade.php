@@ -1,3 +1,4 @@
+Class "Maatwebsite\Excel\Facades\Excel" not found
 @extends('layouts.app')
 
 @section('title', 'Tambah Siswa - Admin Panel')

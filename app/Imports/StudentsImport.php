@@ -91,9 +91,9 @@ class StudentsImport implements
             $this->importedCount++;
 
             return new Student([
-                'nisn' => $row['nisn'],
-                'nis' => $row['nis'] ?? '',
-                'nama' => $row['nama'] ?? '',
+                'nisn' => (string) $row['nisn'],
+                'nis' => (string) ($row['nis'] ?? ''),
+                'nama' => $row['nama_lengkap'] ?? '',
                 'tanggal_lahir' => $tanggalLahir,
                 'kelas' => $row['kelas'] ?? '',
                 'program_studi' => $row['program_studi'] ?? '',
@@ -115,9 +115,9 @@ class StudentsImport implements
     public function rules(): array
     {
         return [
-            'nisn' => 'required|string|max:20',
-            'nis' => 'nullable|string|max:20',
-            'nama' => 'required|string|max:255',
+            'nisn' => 'required|max:20',
+            'nis' => 'nullable|max:20',
+            'nama_lengkap' => 'required|string|max:255',
             'tanggal_lahir' => 'nullable',
             'kelas' => 'nullable|string|max:50',
             'program_studi' => 'nullable|string|max:100',

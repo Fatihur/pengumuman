@@ -347,7 +347,7 @@ class AdminController extends Controller
 
                 return redirect()->route('admin.students.import')
                     ->with('warning', $message)
-                    ->with('errors', $errors);
+                    ->with('import_errors', $errors);
             }
 
             return redirect()->route('admin.students')
