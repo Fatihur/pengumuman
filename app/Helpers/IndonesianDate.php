@@ -223,7 +223,7 @@ class IndonesianDate
         $date = null;
         switch ($dateFormat) {
             case 'custom':
-                if (!empty($customDate)) {
+                if (!empty($customDate) && $customDate !== null && $customDate !== '') {
                     $date = $customDate;
                 } else {
                     $date = now(); // Fallback to current date
@@ -267,7 +267,7 @@ class IndonesianDate
         $date = null;
         switch ($dateFormat) {
             case 'custom':
-                if (!empty($customDate)) {
+                if (!empty($customDate) && $customDate !== null && $customDate !== '') {
                     $date = $customDate;
                 } else {
                     $date = now(); // Fallback to current date

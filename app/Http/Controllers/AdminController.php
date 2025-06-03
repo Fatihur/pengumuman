@@ -511,7 +511,7 @@ class AdminController extends Controller
         // Save signature settings
         Setting::setValue('signature_location', $request->signature_location);
         Setting::setValue('signature_date_format', $request->signature_date_format);
-        Setting::setValue('signature_custom_date', $request->signature_custom_date);
+        Setting::setValue('signature_custom_date', $request->signature_custom_date ?? '');
 
         return back()->with('success', 'Pengaturan berhasil diperbarui.');
     }
