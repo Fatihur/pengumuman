@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Setting;
 use App\Imports\StudentsImport;
+use App\Exports\StudentsTemplateExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
@@ -363,61 +364,7 @@ class AdminController extends Controller
      */
     public function downloadTemplate()
     {
-        $filename = 'template_import_siswa.csv';
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-        ];
-
-        $callback = function() {
-            $file = fopen('php://output', 'w');
-
-            // Add BOM for UTF-8
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-
-            // Header dengan contoh data (no_surat dihapus karena auto-generated)
-            fputcsv($file, [
-                'nisn',
-                'nis',
-                'nama',
-                'tanggal_lahir',
-                'kelas',
-                'program_studi',
-                'status_kelulusan',
-                'pesan_khusus'
-                // no_surat akan di-generate otomatis oleh sistem
-            ]);
-
-            // Contoh data (tanpa no_surat karena auto-generated)
-            fputcsv($file, [
-                '1234567890',
-                '12345',
-                'Ahmad Budi Santoso',
-                '2005-01-15',
-                'XII IPA 1',
-                'IPA',
-                'lulus',
-                'Selamat atas kelulusannya'
-                // no_surat akan di-generate: SK/001/XII/2025
-            ]);
-
-            fputcsv($file, [
-                '1234567891',
-                '12346',
-                'Siti Nurhaliza',
-                '2005-03-20',
-                'XII IPS 2',
-                'IPS',
-                'tidak_lulus',
-                'Jangan menyerah, terus belajar dan perbaiki diri'
-                // no_surat kosong untuk yang tidak lulus
-            ]);
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        return Excel::download(new StudentsTemplateExport(), 'template_import_siswa.xlsx');
     }
 
     /**
