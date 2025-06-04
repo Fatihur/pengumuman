@@ -6,6 +6,11 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\SecurityController;
 use App\Http\Controllers\SecurityLogController;
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/linkstorage', function () {
+    Artisan::call('storage:link');
+});
 
 // Public routes with rate limiting
 Route::middleware(['rate.limit:30,1'])->group(function () {
